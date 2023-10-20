@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
+import Layout from "./components/layout/Layout";
+import StudentDashboard from "./components/Student/studentdashboard/StudentDashboard";
+import TeacherDashboard from "./components/Teacher/teacherdashboard/TeacherDashboard";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 function App() {
+  const queryClient = new QueryClient();
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <Routes path="/">
+            <Route path="/Student" element={<Layout />}>
+              <Route
+                path="StudentDashboard"
+                element={<StudentDashboard />}
+              ></Route>
+            </Route>
+
+            <Route path="/Teacher" element={<Layout />}>
+              <Route
+                path="TeacherDashboard"
+                element={<TeacherDashboard />}
+              ></Route>
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </QueryClientProvider>
     </div>
   );
 }

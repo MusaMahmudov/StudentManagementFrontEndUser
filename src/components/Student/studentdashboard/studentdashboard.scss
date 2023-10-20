@@ -1,0 +1,58 @@
+@import "./../../../UI/scssutils/variables.scss";
+.main-part {
+  width: 100%;
+  padding: 30px 40px;
+  background-color: #edf4ff;
+
+  & .container {
+    & .search-part {
+      margin-bottom: 20px;
+    }
+    & .students {
+      background: white;
+      padding: 30px;
+      &-list {
+        &-title {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        &-info {
+          background-color: #edf4ff;
+          & thead {
+            & th {
+              font-weight: 900;
+            }
+          }
+        }
+      }
+    }
+
+    & .title {
+      display: flex;
+      justify-content: space-between;
+      & h1 {
+        font-size: 22px;
+        color: #2c323f;
+      }
+      &-left {
+        font-size: 22px;
+      }
+      &-right {
+        & h1 {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+}
+.cover {
+  cursor: pointer;
+  transition: 0.3s;
+  &:hover {
+    color: $navbarBackgroundColor;
+  }
+}
+.loading {
+  background: white;
+}
