@@ -13,7 +13,12 @@ const StudentDashboard = () => {
           </div>
         </section>
         <section className="numbers">
-          <div className="info"></div>
+          <div className="info">
+            <div className="container">
+              <div className="info-left"></div>
+              <div className="info-right"></div>
+            </div>
+          </div>
         </section>
       </div>
     </div>

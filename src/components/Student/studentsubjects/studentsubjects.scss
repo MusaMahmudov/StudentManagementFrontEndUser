@@ -1,0 +1,53 @@
+@import "../../../UI/scssutils/variables.scss";
+
+.main-part {
+  & .container {
+    & .subjects {
+      & .subject {
+        padding: 20px 40px;
+        color: white;
+
+        & .box {
+          box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+          width: 300px;
+          display: flex;
+          flex-direction: column;
+          &-bottom {
+            cursor: pointer;
+            padding: 10px;
+            background: #3a004e;
+            transition: 0.5s;
+            &:hover {
+              background: black;
+            }
+            &-navigate {
+              text-align: end;
+              & p {
+                padding: 5px 15px;
+                margin: 0px;
+              }
+            }
+          }
+          &-top {
+            padding: 10px;
+
+            background: #cc74eb;
+            &-title {
+              display: flex;
+              justify-content: space-between;
+              & .left {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+              }
+            }
+            &-middle {
+              display: flex;
+              justify-content: space-between;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -3,6 +3,8 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import GridViewIcon from "@mui/icons-material/GridView";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import WidgetsIcon from "@mui/icons-material/Widgets";
+import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
+
 import "./sidebar.scss";
 
 const Sidebar = () => {
@@ -27,6 +29,11 @@ const Sidebar = () => {
             <li className="submenu">
               <WidgetsIcon className="left-icon" />
               <button>Groups</button>
+              <ArrowForwardIosIcon className="right-icon" />
+            </li>
+            <li className="submenu">
+              <LocalLibraryIcon className="left-icon" />
+              <button>Subjects</button>
               <ArrowForwardIosIcon className="right-icon" />
             </li>
           </ul>
