@@ -17,32 +17,35 @@ import StudentGroups from "./components/Student/groups/Groups";
 import StudentSubjects from "./components/Student/studentsubjects/StudentSubjects";
 
 function App() {
+  const urlParams = new URLSearchParams(window.location.search);
+  localStorage.setItem("token", urlParams.get("token"));
+  const token = localStorage.getItem("token");
   const queryClient = new QueryClient();
+
   const location = useLocation();
   const navigate = useNavigate();
   useEffect(() => {
     if (location.pathname === "/" || location.pathname === "") {
-      navigate("/Student/StudentDashboard");
+      navigate("/StudentDashboard");
     }
   }, []);
   return (
     <div className="App">
       <QueryClientProvider client={queryClient}>
-        <Routes path="/">
-          <Route path="/Student" element={<Layout />}>
+        <Routes>
+          <Route path="/" element={<Layout />}>
             <Route
-              path="StudentDashboard"
+              path="/StudentDashboard"
               element={<StudentDashboard />}
             ></Route>
             <Route path="Groups" element={<StudentGroups />}></Route>
-            <Route path="Subjects" element={<StudentSubjects />}></Route>
-          </Route>
-
-          <Route path="/Teacher" element={<Layout />}>
-            <Route
-              path="TeacherDashboard"
-              element={<TeacherDashboard />}
-            ></Route>
+            <Route path="StudentSubjects" element={<StudentSubjects />}></Route>
+            {/* <Route path="/Teacher" element={<Layout />}>
+              <Route
+                path="TeacherDashboard"
+                element={<TeacherDashboard />}
+              ></Route>
+            </Route> */}
           </Route>
         </Routes>
       </QueryClientProvider>
