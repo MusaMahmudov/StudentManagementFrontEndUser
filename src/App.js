@@ -15,11 +15,13 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { useEffect } from "react";
 import StudentGroups from "./components/Student/groups/Groups";
 import StudentSubjects from "./components/Student/studentsubjects/StudentSubjects";
+import StudentSubjectInformation from "./components/Student/studentsubjectinformation/StudentSubjectInformation";
+import StudentSubjectFinalExam from "./components/Student/studentsubjectfinalexam/StudentSubjectFinalExam";
+import StudentSchedule from "./components/Student/studentschedule/StudentSchedule";
 
 function App() {
   const urlParams = new URLSearchParams(window.location.search);
   localStorage.setItem("token", urlParams.get("token"));
-  const token = localStorage.getItem("token");
   const queryClient = new QueryClient();
 
   const location = useLocation();
@@ -39,7 +41,19 @@ function App() {
               element={<StudentDashboard />}
             ></Route>
             <Route path="Groups" element={<StudentGroups />}></Route>
+            <Route path="StudentSchedule" element={<StudentSchedule />}></Route>
+
+            <Route
+              path="StudentSubjects/:Id"
+              element={<StudentSubjectInformation />}
+            >
+              <Route
+                path="props/Final/:Id"
+                element={<StudentSubjectFinalExam />}
+              ></Route>
+            </Route>
             <Route path="StudentSubjects" element={<StudentSubjects />}></Route>
+
             {/* <Route path="/Teacher" element={<Layout />}>
               <Route
                 path="TeacherDashboard"

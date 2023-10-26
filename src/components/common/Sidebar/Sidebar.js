@@ -20,16 +20,18 @@ const Sidebar = () => {
         </div>
         <div className="sidebar-menu">
           <ul className="menu">
-            <li className="submenu">
+            <li
+              className="submenu"
+              onClick={() => navigate(`StudentDashboard?token=${token}`)}
+            >
               <GridViewIcon className="left-icon" />
-              <button
-                onClick={() => navigate(`StudentDashboard?token=${token}`)}
-              >
-                Dashboard
-              </button>
+              <button>Dashboard</button>
               <ArrowForwardIosIcon className="right-icon" />
             </li>
-            <li className="submenu">
+            <li
+              className="submenu"
+              onClick={() => navigate(`StudentSchedule?token=${token}`)}
+            >
               <CalendarMonthIcon className="left-icon" />
               <button>Schedule</button>
               <ArrowForwardIosIcon className="right-icon" />
@@ -39,13 +41,12 @@ const Sidebar = () => {
               <button>Groups</button>
               <ArrowForwardIosIcon className="right-icon" />
             </li>
-            <li className="submenu">
+            <li
+              className="submenu"
+              onClick={() => navigate(`StudentSubjects?token=${token}`)}
+            >
               <LocalLibraryIcon className="left-icon" />
-              <button
-                onClick={() => navigate(`StudentSubjects?token=${token}`)}
-              >
-                Subjects
-              </button>
+              <button>Subjects</button>
               <ArrowForwardIosIcon className="right-icon" />
             </li>
           </ul>

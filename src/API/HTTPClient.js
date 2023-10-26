@@ -1,15 +1,24 @@
 import axios from "axios";
-
+import { Token } from "@mui/icons-material";
 class HTTPClient {
+  BaseUrl;
   constructor(BaseUrl) {
     this.BaseUrl = BaseUrl;
   }
 
-  async GetAll(endPoint) {
-    return await axios.get(`${this.BaseUrl}/${endPoint}`);
+  async getAll(endPoint, token) {
+    return await axios.get(`${this.BaseUrl}/${endPoint}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
-  async getById(endPoint, id) {
-    return await axios.get(`${this.BaseUrl}/${endPoint}/${id}`);
+  async getById(endPoint, id, token) {
+    return await axios.get(`${this.BaseUrl}/${endPoint}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
   async post(endPoint, body) {
     return await axios.post(`${this.BaseUrl}/${endPoint}`, body);

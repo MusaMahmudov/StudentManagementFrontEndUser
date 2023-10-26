@@ -1,17 +1,20 @@
 import HTTPClient from "../HTTPClient";
-import BaseUrlForAll from "../BaseURLs";
-export class studentService extends HTTPClient {
+import BaseUrl from "../BaseURLs";
+class studentService extends HTTPClient {
   constructor() {
-    super(BaseUrlForAll);
+    super(BaseUrl);
   }
   async getAllStudents() {
     return await this.getAll("Students");
   }
-  async getStudentById(id) {
-    return await this.getById("Students", id);
+  async getStudentById(id, token) {
+    return await this.getById("Students", id, token);
   }
   async getStudentByIdForUpdate(id) {
     return await this.getById("Students/update", id);
+  }
+  async getStudentByIdForStudentPage(id, token) {
+    return await this.getById("Students/GetStudentForStudentPage", id, token);
   }
   async createStudent(body) {
     return await this.post("Students", body);
@@ -23,3 +26,4 @@ export class studentService extends HTTPClient {
     return await this.delete("Students", id);
   }
 }
+export default studentService;

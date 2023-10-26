@@ -2,16 +2,20 @@
 
 .main-part {
   & .container {
+    width: 100%;
+
     & .subjects {
+      color: white;
+      width: 75%;
       & .subject {
         padding: 20px 40px;
-        color: white;
 
         & .box {
           box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
           width: 300px;
           display: flex;
           flex-direction: column;
+          height: 250px;
           &-bottom {
             cursor: pointer;
             padding: 10px;
@@ -29,12 +33,18 @@
             }
           }
           &-top {
+            height: 80%;
             padding: 10px;
-
             background: #cc74eb;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
             &-title {
               display: flex;
               justify-content: space-between;
+              & h1 {
+                margin: 0px;
+              }
               & .left {
                 display: flex;
                 align-items: center;
@@ -44,6 +54,9 @@
             &-middle {
               display: flex;
               justify-content: space-between;
+              & h1 {
+                margin: 0px;
+              }
             }
           }
         }
