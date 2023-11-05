@@ -1,0 +1,32 @@
+@import "./variables.scss";
+
+.absentSign {
+  width: 40px;
+  height: 20px;
+  font-size: 13px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 2px;
+}
+.presentSign {
+  height: 20px;
+  width: 40px;
+  font-size: 13px;
+  background: $navbarBackgroundColor;
+  color: white;
+  border: none;
+  border-radius: 2px;
+}
+.noInfoSign {
+  height: 20px;
+  width: 40px;
+  font-size: 13px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 2px;
+}
+.errorMessage {
+  color: red;
+}

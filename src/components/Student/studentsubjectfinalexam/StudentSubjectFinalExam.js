@@ -11,31 +11,50 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useLocation, useParams } from "react-router-dom";
 import { TokenContext } from "../../../contexts/TokenContext";
+import { useService } from "../../../hooks";
+import { useQuery } from "react-query";
+import { QueryKeys } from "../../../API/QueryKeys";
+import { Alert } from "@mui/material";
 const StudentSubjectFinalExam = () => {
-  const { subjectInfo } = useContext(StudentSubjectContext);
-  const { studentId, studentFullName } = useContext(TokenContext);
+  const { personId, personFullName, token } = useContext(TokenContext);
   const [Grade, setGrade] = useState("");
-  console.log(studentFullName);
-  const { Id: examId } = useParams();
-  const [exam, setExam] = useState();
+  const { Id: finalExamId } = useParams();
+  const { examResultServices } = useService();
+  const { state: groupSubjectId } = useLocation();
+  const [finalScoreExam, setFinalScoreExam] = useState();
+  const [scoreBeforeExam, setScoreBeforeExam] = useState();
+
+  const examResultQuery = useQuery([QueryKeys.getExamQueryKeys], () =>
+    examResultServices.getExamResultForExamForStudentPage(
+      finalExamId,
+      personId,
+      token
+    )
+  );
+  const otherExamResultQuery = useQuery(
+    [QueryKeys.getExamResultForExamForStudentPage],
+    () =>
+      examResultServices.getExamResultsForFinalExamForStudentPage(
+        groupSubjectId,
+        personId,
+        token
+      )
+  );
+  let finalScore;
+  let scoreBefore;
+  console.log(otherExamResultQuery.data?.data, "others");
   useEffect(() => {
-    setExam(() => subjectInfo.exams.find((exam) => exam.id === examId));
-  }, []);
-  let scoreBeforeExam = 0;
-  if (subjectInfo) {
-    let allExams = subjectInfo.exams?.filter((exam) => exam.id !== examId);
-    allExams.map((exam) => {
-      if (exam.examResults.length > 0) {
-        scoreBeforeExam += exam.examResults.find(
-          (examResult) => examResult.studentId === studentId
-        )["score"];
-      }
-    });
-  }
-  let examScore = exam?.examResults.find(
-    (examResult) => examResult.studentId === studentId
-  ).score;
-  const finalScore = examScore + scoreBeforeExam;
+    scoreBefore = otherExamResultQuery.data?.data.reduce(function (
+      currentSum,
+      currentNumber
+    ) {
+      return currentNumber.score + currentSum;
+    },
+    0);
+    finalScore = scoreBefore + examResultQuery.data?.data.score;
+    setFinalScoreExam(finalScore);
+    setScoreBeforeExam(scoreBefore);
+  }, [otherExamResultQuery, examResultQuery]);
   useEffect(() => {
     switch (true) {
       case finalScore >= 91 && finalScore <= 100:
@@ -61,7 +80,7 @@ const StudentSubjectFinalExam = () => {
         setGrade("F");
         break;
     }
-  }, [finalScore]);
+  }, [finalScoreExam]);
 
   // else {
   //   let allExams = subjectInfo.exams?.filter(
@@ -93,12 +112,17 @@ const StudentSubjectFinalExam = () => {
       backgroundColor: theme.palette.action.hover,
       backgroundColor: "#c7ccea",
     },
-    // hide last border
     "&:last-child td, &:last-child th": {
       border: "1px solid white",
     },
   }));
-
+  if (!examResultQuery.data) {
+    return (
+      <Alert variant="filled" severity="error">
+        This is no information yet!
+      </Alert>
+    );
+  }
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -115,15 +139,27 @@ const StudentSubjectFinalExam = () => {
         <TableBody>
           <StyledTableRow>
             <StyledTableCell component="th" scope="row">
-              {studentFullName}
+              {personFullName}
             </StyledTableCell>
+            {/* <StyledTableCell align="left">{scoreBeforeExam}</StyledTableCell> */}
             <StyledTableCell align="left">{scoreBeforeExam}</StyledTableCell>
-            <StyledTableCell align="left">{examScore}</StyledTableCell>
-            <StyledTableCell align="left">{exam?.maxScore}</StyledTableCell>
-            <StyledTableCell component="th" scope="row">
-              {finalScore}
+
+            <StyledTableCell align="left">
+              {examResultQuery === null
+                ? "Exam not verified"
+                : examResultQuery.data?.data.score}
             </StyledTableCell>
-            <StyledTableCell align="left">{Grade}</StyledTableCell>
+            <StyledTableCell align="left">
+              {examResultQuery.data?.data.exam.maxScore}
+            </StyledTableCell>
+            <StyledTableCell component="th" scope="row">
+              {finalScoreExam !== undefined
+                ? finalScoreExam
+                : "Final Exam not verified"}
+            </StyledTableCell>
+            <StyledTableCell align="left">
+              {Grade ? Grade : "Final Exam not verified"}
+            </StyledTableCell>
           </StyledTableRow>
         </TableBody>
       </Table>

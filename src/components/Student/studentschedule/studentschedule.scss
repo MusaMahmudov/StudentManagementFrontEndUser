@@ -18,7 +18,15 @@
   border-radius: 5px;
   & .add-info {
     & p {
+      z-index: 999999;
       margin: 5px 0px;
     }
   }
+}
+.loading {
+  margin-top: 40px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

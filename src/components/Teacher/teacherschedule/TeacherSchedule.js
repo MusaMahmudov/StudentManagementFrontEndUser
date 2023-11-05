@@ -8,26 +8,22 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import "./studentschedule.scss";
 import tippy from "tippy.js";
 import "tippy.js/animations/scale.css";
 import "tippy.js/themes/translucent.css";
 import "tippy.js/dist/tippy.css";
 import { CircularProgress } from "@mui/material";
-const StudentSchedule = () => {
-  const { studentServices, subjectHourServices } = useService();
+const TeacherSchedule = () => {
+  const { subjectHourServices } = useService();
   const { personId, token } = useContext(TokenContext);
 
-  // const studentQuery = useQuery([QueryKeys.getStudentByIdKey], () =>
-  //   studentServices.getStudentByIdForStudentPage(personId, token)
-  // );
-  let events = [];
-  const subjectHourQuery = useQuery([QueryKeys.getSubjectHoursByIdKey], () =>
-    subjectHourServices.getSubjectHoursForStudentSchedule(personId, token)
+  const subjectHoursQuery = useQuery([QueryKeys.getStudentByIdKey], () =>
+    subjectHourServices.getSubjectHoursForTeacherSchedule(personId, token)
   );
-  console.log("data", subjectHourQuery.data?.data);
-
-  if (subjectHourQuery.isLoading) {
+  let subjectHours;
+  console.log(subjectHoursQuery.data?.data);
+  const events = [];
+  if (subjectHoursQuery.isLoading) {
     return (
       <div className="loading">
         <CircularProgress size={400} />
@@ -35,8 +31,8 @@ const StudentSchedule = () => {
     );
   }
 
-  if (subjectHourQuery.isSuccess) {
-    subjectHourQuery.data?.data.forEach((subjectHour) => {
+  if (subjectHoursQuery.isSuccess) {
+    subjectHoursQuery.data?.data.forEach((subjectHour) => {
       let startDate = new Date(subjectHour.date);
       let endDate = new Date(subjectHour.date);
 
@@ -54,6 +50,10 @@ const StudentSchedule = () => {
           room: subjectHour.room,
           group: subjectHour.groupSubject.groupName,
           lessonType: subjectHour.lessonType.name,
+          teachers: subjectHour.groupSubject.teacherSubjects.filter(
+            (teacherSubject) =>
+              teacherSubject.teacherRoleName === subjectHour.lessonType.name
+          ),
         },
       };
       events.push(event);
@@ -81,8 +81,13 @@ const StudentSchedule = () => {
               title.innerHTML = info.event.title;
               const additionalInfo = document.createElement("div");
               additionalInfo.classList.add("add-info");
-              additionalInfo.innerHTML = `<p>Room:${info.event.extendedProps.room}<p/>`;
+              additionalInfo.innerHTML = `<p>Room - ${info.event.extendedProps.room}<p/>`;
               additionalInfo.innerHTML += `<p>${info.event.extendedProps.lessonType}<p/>`;
+              additionalInfo.innerHTML += info.event.extendedProps.teachers.map(
+                (teacher) => ` <p>Teacher - ${teacher.teacherName}<p/>`
+              );
+
+              //   additionalInfo.innerHTML += `<p>${info.event.extendedProps.teacher.}<p/>`;
 
               tooltip.appendChild(title);
               tooltip.appendChild(additionalInfo);
@@ -121,4 +126,4 @@ const StudentSchedule = () => {
     </div>
   );
 };
-export default StudentSchedule;
+export default TeacherSchedule;

@@ -13,6 +13,7 @@ import { QueryKeys } from "../../API/QueryKeys";
 import {
   tokenFullNameProperty,
   tokenIdProperty,
+  tokenRoleProperty,
 } from "../../utils/TokenProperties";
 
 const Layout = () => {
@@ -22,13 +23,23 @@ const Layout = () => {
   const userQuery = useQuery([QueryKeys.getStudentByIdKey], () =>
     userServices.getUserById(decodedToken[tokenIdProperty], token)
   );
-
-  const studentFullName = decodedToken[tokenFullNameProperty];
-  const studentId = userQuery.data?.data.student?.id;
-  localStorage.setItem("studentId", studentId);
-
+  console.log("decoded", decodedToken);
+  let personFullName;
+  let personId;
+  if (decodedToken[tokenRoleProperty] === "Student") {
+    personFullName = decodedToken[tokenFullNameProperty];
+    personId = userQuery.data?.data.student?.id;
+    localStorage.setItem("personId", personId);
+  } else if (decodedToken[tokenRoleProperty] === "Teacher") {
+    personFullName = decodedToken[tokenFullNameProperty];
+    personId = userQuery.data?.data.teacher?.id;
+    localStorage.setItem("personId", personId);
+  }
+  console.log("person", personId);
   return (
-    <TokenContext.Provider value={{ token, studentId, studentFullName }}>
+    <TokenContext.Provider
+      value={{ token, personId, personFullName, decodedToken }}
+    >
       <main>
         <Navbar />
         <div className="main-container">

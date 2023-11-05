@@ -1,5 +1,4 @@
 import {
-  Alert,
   Box,
   CircularProgress,
   FormControl,
@@ -10,36 +9,23 @@ import {
 } from "@mui/material";
 import { TitleComponent } from "../../../UI/common/TitleComponent";
 import InfoIcon from "@mui/icons-material/Info";
-import "./studentsubjects.scss";
 import { useService } from "../../../hooks";
 import { useQuery } from "react-query";
 import { useContext, useEffect, useState } from "react";
 import { TokenContext } from "../../../contexts/TokenContext";
-import { tokenIdProperty } from "../../../utils/TokenProperties";
 import { QueryKeys } from "../../../API/QueryKeys";
-import jwtDecode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import tippy from "tippy.js";
 
-const StudentSubjects = () => {
+const TeacherSubjects = () => {
   const navigate = useNavigate();
   const { token, personId } = useContext(TokenContext);
-  const { studentServices, groupSubjectServices } = useService();
+  const { groupSubjectServices } = useService();
   const [id, setId] = useState();
   const [yearFilter, setYearFilter] = useState(new Date().getFullYear());
   const [semesterFilter, setSemesterFilter] = useState();
-
-  const groupSubjectQuery = useQuery(
-    [QueryKeys.getGroupSubjectsForStudentPage],
-    () =>
-      groupSubjectServices.getGroupSubjectForSubjectsForStudentPage(
-        personId,
-        token
-      )
-  );
-  console.log("subjectDate", groupSubjectQuery.data?.data);
-  console.log(personId, "Id");
+  console.log("personId", personId);
   useEffect(() => {
+    console.log(new Date().getMonth());
     switch (new Date().getMonth()) {
       case 8:
       case 9:
@@ -61,20 +47,11 @@ const StudentSubjects = () => {
     }
   }, []);
 
-  // const studentQuery = useQuery([QueryKeys.getStudentByIdKey], () =>
-  //   studentServices.getStudentByIdForStudentPage(personId, token)
-  // );
-  const renderTooltip = (target) => {
-    tippy(target, {
-      content: "Additional information",
-      placement: "right",
-    });
-  };
-
-  useEffect(() => {
-    const targets = document.querySelectorAll(".info-icon");
-    targets.forEach((target) => renderTooltip(target));
-  }, []);
+  const groupSubjectQuery = useQuery(
+    [QueryKeys.getGroupSubjectsForTeacherPage],
+    () => groupSubjectServices.getGroupSubjectForTeacherPage(personId, token)
+  );
+  //   const groupSubjects = studentQuery.data?.data.mainGroup?.groupSubjects;
   const groupSubjects = groupSubjectQuery.data?.data;
   useEffect(() => {
     setId(personId);
@@ -89,28 +66,16 @@ const StudentSubjects = () => {
       </div>
     );
   }
-
   if (groupSubjectQuery.isError) {
     return <h1>Error</h1>;
   }
   if (!groupSubjectQuery.data?.data.length > 0) {
-    return (
-      <Box
-        sx={{ width: "80%" }}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-      >
-        <Alert sx={{ width: "50%" }} variant="filled" severity="error">
-          NO SUBJECTS
-        </Alert>
-      </Box>
-    );
+    return <h1>No Subjects</h1>;
   }
   return (
     <div className="main-part">
       <div className="container">
-        <TitleComponent child1={"Subjects"} child2={"Student / Subjects"} />
+        <TitleComponent child1={"Subjects"} child2={"Teacher / Subjects"} />
         <section className="content">
           <section className="subjects">
             <Box
@@ -135,6 +100,7 @@ const StudentSubjects = () => {
                     ? groupSubject
                     : groupSubject.year === yearFilter
                 ).length > 0 ? (
+                groupSubjects &&
                 groupSubjects
                   .filter((groupSubject) =>
                     semesterFilter === ""
@@ -152,17 +118,14 @@ const StudentSubjects = () => {
                         <div className="box-top">
                           <div className="box-top-title">
                             <h1 className="left">
-                              <InfoIcon className="info-icon" />
+                              <InfoIcon />
                               {groupSubject.subject.name}
                             </h1>
                             <h1 className="right">{groupSubject.year}</h1>
                           </div>
                           <div className="box-top-middle">
                             <section className="group">
-                              <h1>Group : {groupSubject.groupName}</h1>
-                            </section>
-                            <section className="Credits">
-                              <h1>Credits : {groupSubject.credits}</h1>
+                              <h1>Group:{groupSubject.groupName}</h1>
                             </section>
                           </div>
                         </div>
@@ -170,7 +133,7 @@ const StudentSubjects = () => {
                           className="box-bottom"
                           onClick={() =>
                             navigate(`${groupSubject.id}?token=${token}`, {
-                              state: groupSubjectQuery.data?.data.find(
+                              state: groupSubjects.find(
                                 (groupSub) => groupSub.id === groupSubject.id
                               ),
                             })
@@ -189,12 +152,38 @@ const StudentSubjects = () => {
                     width: "100%",
                     display: "flex",
                     justifyContent: "center",
-                    fontSize: 100,
+                    fontSize: 80,
                   }}
                 >
                   <h1 className="errorMessage">No subjects</h1>
                 </div>
               )}
+              {/* <div className="subject">
+                <div className="box">
+                  <div className="box-top">
+                    <div className="box-top-title">
+                      <h1 className="left">
+                        <InfoIcon />
+                        Math 2
+                      </h1>
+                      <h1 className="right">2023</h1>
+                    </div>
+                    <div className="box-top-middle">
+                      <section className="group">
+                        <h1>Group:284.20E</h1>
+                      </section>
+                      <section className="Students">
+                        <h1>Students:20</h1>
+                      </section>
+                    </div>
+                  </div>
+                  <div className="box-bottom">
+                    <div className="box-bottom-navigate">
+                      <p>Show More</p>
+                    </div>
+                  </div>
+                </div>
+              </div> */}
             </Box>
           </section>
           <section className="subjects-filter">
@@ -205,7 +194,6 @@ const StudentSubjects = () => {
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   label="Year"
-                  value={yearFilter}
                   defaultValue={yearFilter}
                   onChange={(e) => setYearFilter(e.target.value)}
                 >
@@ -224,8 +212,7 @@ const StudentSubjects = () => {
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  label="Semester"
-                  value={semesterFilter}
+                  label="Year"
                   sx={{ background: "white" }}
                   defaultValue={semesterFilter}
                   onChange={(e) => setSemesterFilter(e.target.value)}
@@ -242,4 +229,4 @@ const StudentSubjects = () => {
     </div>
   );
 };
-export default StudentSubjects;
+export default TeacherSubjects;

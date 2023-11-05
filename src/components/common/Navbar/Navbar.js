@@ -9,8 +9,9 @@ import {
   tokenRoleProperty,
   tokenUserNameProperty,
 } from "../../../utils/TokenProperties";
-
+import { useNavigate } from "react-router-dom";
 const Navbar = () => {
+  const navigate = useNavigate();
   const { token } = useContext(TokenContext);
   const [userInfo, setUserInfo] = useState({
     userName: "",
@@ -26,6 +27,14 @@ const Navbar = () => {
     }
   }, []);
 
+  const handleLogout = () => {
+    if (token) {
+      // authServices.Logout(token);
+      localStorage.removeItem("token");
+      window.location.href = "http://localhost:3000/SignIn";
+    }
+  };
+
   return (
     <div className="header">
       <div className="container">
@@ -33,6 +42,9 @@ const Navbar = () => {
           <img src={adnsuLogo} className="adnsu-logo" />
         </div>
         <div className="right-navbar">
+          <div>
+            <button onClick={() => handleLogout()}>Logout</button>
+          </div>
           <div className="user-info">
             <h1>{userInfo.userName}</h1>
             <p>{userInfo.roleName}</p>

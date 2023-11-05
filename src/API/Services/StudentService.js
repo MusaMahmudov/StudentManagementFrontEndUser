@@ -16,6 +16,29 @@ class studentService extends HTTPClient {
   async getStudentByIdForStudentPage(id, token) {
     return await this.getById("Students/GetStudentForStudentPage", id, token);
   }
+  async getStdentForStudentAttendancePage(studentId, subjectId, token) {
+    return await this.getByIdExtra(
+      "Students/GetStudentForStudentAttendancePage",
+      studentId,
+      subjectId,
+      token
+    );
+  }
+  async getStudentsForTeacherAttendancePage(subjectId, token) {
+    return await this.getById(
+      "Students/GetStudentsForAttendanceForTeacherPage",
+      subjectId,
+      token
+    );
+  }
+
+  async getStudentsForExamsForTeacherPageAssign(subjectId, token) {
+    return await this.getById(
+      "Students/GetStudentsForExamForTeacherPage",
+      subjectId,
+      token
+    );
+  }
   async createStudent(body) {
     return await this.post("Students", body);
   }

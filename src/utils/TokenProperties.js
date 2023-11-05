@@ -7,3 +7,4 @@ export const tokenRoleProperty =
 export const tokenIdProperty =
   "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
 export const tokenFullNameProperty = "FullName";
+export const tokenPersonIdProperty = "Id";

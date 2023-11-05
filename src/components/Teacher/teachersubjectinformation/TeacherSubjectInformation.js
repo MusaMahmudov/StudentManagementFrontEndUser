@@ -1,32 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import { TitleComponent } from "../../../UI/common/TitleComponent";
-import "./studentsubjectinformation.scss";
-import { Button, stepButtonClasses } from "@mui/material";
+import { Button, CircularProgress, stepButtonClasses } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { TokenContext } from "../../../contexts/TokenContext";
-import { StudentSubjectContext } from "../../../contexts/StudentSubjectContext";
-import { SatelliteAlt } from "@mui/icons-material";
-import { Query, useQuery } from "react-query";
-import { QueryKeys } from "../../../API/QueryKeys";
-import { useService } from "../../../hooks";
+import { TeacherSubjectContext } from "../../../contexts/TeacherSubjectContext";
 
-const StudentSubjectInformation = () => {
-  const { examServices } = useService();
+const TeacherSubjectInformation = () => {
   const { token } = useContext(TokenContext);
 
   const navigate = useNavigate();
   const [subjectInfo, setSubjectInfo] = useState();
-  const { Id: groupSubjectId } = useParams();
-  console.log("params", groupSubjectId);
   const { state } = useLocation();
   useEffect(() => {
     setSubjectInfo(state);
   }, []);
-  const examQuery = useQuery([QueryKeys.getExamQueryKeys], () =>
-    examServices.getExamForSubjectsforStudentPage(groupSubjectId, token)
-  );
-  console.log("examQuery", examQuery.data?.data);
 
   console.log("state", state);
   console.log("subiNFO", subjectInfo);
@@ -42,7 +30,7 @@ const StudentSubjectInformation = () => {
           <div className="subject-information-title">
             <section className="subject-name">
               <h1>
-                Subject :{" "}
+                Subject :
                 {state ? state.subject?.name : subjectInfo?.subject.name}
               </h1>
             </section>
@@ -103,7 +91,7 @@ const StudentSubjectInformation = () => {
                 </li>
               )}
 
-              {/* {state && state.exams && state.exams.length > 0 ? (
+              {state && state.exams && state.exams.length > 0 ? (
                 state.exams.map((exam) => (
                   <li key={exam.id}>
                     <Button
@@ -137,32 +125,17 @@ const StudentSubjectInformation = () => {
                 ))
               ) : (
                 <li></li>
-              )} */}
-              {examQuery.data?.data.map((exam) => (
-                <li key={exam.id}>
-                  <Button
-                    variant="outlined"
-                    onClick={() =>
-                      navigate(
-                        `props/${exam.examType}/${exam.id}?token=${token}`,
-                        { state: groupSubjectId }
-                      )
-                    }
-                  >
-                    {exam.name}
-                  </Button>
-                </li>
-              ))}
+              )}
             </ul>
           </div>
           <div className="subject-information-main">
-            <StudentSubjectContext.Provider value={{ subjectInfo }}>
+            <TeacherSubjectContext.Provider value={{ subjectInfo }}>
               <Outlet />
-            </StudentSubjectContext.Provider>
+            </TeacherSubjectContext.Provider>
           </div>
         </section>
       </div>
     </div>
   );
 };
-export default StudentSubjectInformation;
+export default TeacherSubjectInformation;

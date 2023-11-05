@@ -1,6 +1,9 @@
 .main-part {
   & .container {
     & .subject-information {
+      &-main {
+        max-width: 1200px;
+      }
       background: white;
       padding: 30px 40px;
       &-title {

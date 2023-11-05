@@ -18,6 +18,21 @@ import StudentSubjects from "./components/Student/studentsubjects/StudentSubject
 import StudentSubjectInformation from "./components/Student/studentsubjectinformation/StudentSubjectInformation";
 import StudentSubjectFinalExam from "./components/Student/studentsubjectfinalexam/StudentSubjectFinalExam";
 import StudentSchedule from "./components/Student/studentschedule/StudentSchedule";
+import StudentSubjectMidtermExam from "./components/Student/studentmidtermexam/StudentMidtermExam";
+import StudentSubjectQuizExam from "./components/Student/studentsubjectquizexam/StudentSubjectQuizExam";
+import StudentSubjectProjectExam from "./components/Student/studentsubjectprojectexam/StudentSubjectProjectExam";
+import { StudentSubjectTeachers } from "./components/Student/studentsubjectteachers/StudentSubjectTeachers";
+import StudentAttendance from "./components/Student/studentattendance/StudentAttendance";
+import jwtDecode from "jwt-decode";
+import { tokenRoleProperty } from "./utils/TokenProperties";
+import TeacherSubjects from "./components/Teacher/teachersubjects/TeacherSubjects";
+import TeacherSchedule from "./components/Teacher/teacherschedule/TeacherSchedule";
+import TeacherSubjectInformation from "./components/Teacher/teachersubjectinformation/TeacherSubjectInformation";
+import TeacherAttendance from "./components/Teacher/teacherattendance/TeacherAttendance";
+import TeacherSubjectQuizExam from "./components/Teacher/teacherquizexam/TeacherQuizExam";
+import TeacherSubjectMidtermExam from "./components/Teacher/teachermidtermexam/TeacherMidtermExam";
+import TeacherSubjectProjectExam from "./components/Teacher/teacherprojectexam/TeacherProjectExam";
+import TeacherSubjectFinalExam from "./components/Teacher/teacherfinalexam/TeacherFinalExam";
 
 function App() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -26,11 +41,19 @@ function App() {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const decodedToken = jwtDecode(token);
+
   useEffect(() => {
     if (location.pathname === "/" || location.pathname === "") {
-      navigate("/StudentDashboard");
+      if (decodedToken[tokenRoleProperty] === "Student")
+        navigate("/StudentDashboard");
+      else if (decodedToken[tokenRoleProperty] === "Teacher") {
+        navigate(`/TeacherDashboard?token=${token}`);
+      }
     }
   }, []);
+
   return (
     <div className="App">
       <QueryClientProvider client={queryClient}>
@@ -48,18 +71,63 @@ function App() {
               element={<StudentSubjectInformation />}
             >
               <Route
+                path="props/Teachers"
+                element={<StudentSubjectTeachers />}
+              ></Route>
+              <Route
+                path="props/Attendance"
+                element={<StudentAttendance />}
+              ></Route>
+              <Route
                 path="props/Final/:Id"
                 element={<StudentSubjectFinalExam />}
               ></Route>
+              <Route
+                path="props/Midterm/:Id"
+                element={<StudentSubjectMidtermExam />}
+              ></Route>
+              <Route
+                path="props/Quiz/:Id"
+                element={<StudentSubjectQuizExam />}
+              ></Route>
+              <Route
+                path="props/Project/:Id"
+                element={<StudentSubjectProjectExam />}
+              ></Route>
             </Route>
             <Route path="StudentSubjects" element={<StudentSubjects />}></Route>
+            <Route
+              path="TeacherDashboard"
+              element={<TeacherDashboard />}
+            ></Route>
+            <Route path="TeacherSchedule" element={<TeacherSchedule />}></Route>
 
-            {/* <Route path="/Teacher" element={<Layout />}>
+            <Route path="TeacherSubjects" element={<TeacherSubjects />}></Route>
+            <Route
+              path="TeacherSubjects/:Id"
+              element={<TeacherSubjectInformation />}
+            >
               <Route
-                path="TeacherDashboard"
-                element={<TeacherDashboard />}
+                path="props/Attendance"
+                element={<TeacherAttendance />}
               ></Route>
-            </Route> */}
+              <Route
+                path="props/Quiz/:Id"
+                element={<TeacherSubjectQuizExam />}
+              ></Route>
+              <Route
+                path="props/Midterm/:Id"
+                element={<TeacherSubjectMidtermExam />}
+              ></Route>
+              <Route
+                path="props/Project/:Id"
+                element={<TeacherSubjectProjectExam />}
+              ></Route>
+              <Route
+                path="props/Final/:Id"
+                element={<TeacherSubjectFinalExam />}
+              ></Route>
+            </Route>
           </Route>
         </Routes>
       </QueryClientProvider>
