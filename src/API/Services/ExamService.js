@@ -12,6 +12,20 @@ class examService extends HTTPClient {
       token
     );
   }
+  async getExamsForExamsScheduleForTeacherPage(teacherId, token) {
+    return await this.getById(
+      "Exams/GetExamsForExamScheduleForTeacherPage",
+      teacherId,
+      token
+    );
+  }
+  async getExamsForExamsScheduleForStudentPage(studentId, token) {
+    return await this.getById(
+      "Exams/GetExamsForExamScheduleForStudentPage",
+      studentId,
+      token
+    );
+  }
   async getExamForSubjectsforStudentPage(groupSubjectId, token) {
     return await this.getById(
       "Exams/GetExamForSubjectsForStudentPage",

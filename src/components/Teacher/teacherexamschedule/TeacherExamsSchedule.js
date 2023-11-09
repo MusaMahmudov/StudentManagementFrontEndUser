@@ -13,51 +13,50 @@ import "tippy.js/animations/scale.css";
 import "tippy.js/themes/translucent.css";
 import "tippy.js/dist/tippy.css";
 import { CircularProgress } from "@mui/material";
-const TeacherSchedule = () => {
-  const { subjectHourServices } = useService();
+import { queries } from "@testing-library/react";
+const TeacherExamsSchedule = () => {
+  const { subjectHourServices, examServices } = useService();
   const { personId, token } = useContext(TokenContext);
   const [teacherId, setTeacherId] = useState(personId);
+  let events = [];
 
-  const subjectHoursQuery = useQuery([QueryKeys.getStudentByIdKey], () =>
-    subjectHourServices.getSubjectHoursForTeacherSchedule(
+  const examsQuery = useQuery([QueryKeys.getExamQueryKeys], () =>
+    examServices.getExamsForExamsScheduleForTeacherPage(
       teacherId ? teacherId : localStorage.getItem("teacherId"),
       token
     )
   );
 
-  console.log(subjectHoursQuery.data?.data);
-  const events = [];
-  if (subjectHoursQuery.isLoading) {
+  if (examsQuery.isLoading) {
     return (
       <div className="loading">
         <CircularProgress size={400} />
       </div>
     );
   }
+  console.log(examsQuery.data?.data, "exams");
+  if (examsQuery.isSuccess) {
+    examsQuery.data?.data.forEach((exam) => {
+      //   let startDate = new Date(subjectHour.date);
+      //   let endDate = new Date(subjectHour.date);
+      let date = new Date(exam.date);
+      console.log(exam.date.slice(0, 10));
 
-  if (subjectHoursQuery.isSuccess) {
-    subjectHoursQuery.data?.data.forEach((subjectHour) => {
-      let startDate = new Date(subjectHour.date);
-      let endDate = new Date(subjectHour.date);
+      //   let [startHours, startMinutes] = subjectHour.startTime.split(":");
+      //   startDate.setHours(startHours, startMinutes);
 
-      let [startHours, startMinutes] = subjectHour.startTime.split(":");
-      startDate.setHours(startHours, startMinutes);
-
-      let [endHours, endMinutes] = subjectHour.endTime.split(":");
-      endDate.setHours(endHours, endMinutes);
+      //   let [endHours, endMinutes] = subjectHour.endTime.split(":");
+      //   endDate.setHours(endHours, endMinutes);
 
       let event = {
-        title: subjectHour.groupSubject.subjectName,
-        start: startDate,
-        end: endDate,
+        title: `${exam.examTypeName} - ${exam.groupSubject.subjectName}`,
+        subject: exam.groupSubject.subjectName,
+        date: date,
         extendedProps: {
-          room: subjectHour.room,
-          group: subjectHour.groupSubject.groupName,
-          lessonType: subjectHour.lessonType.name,
-          teachers: subjectHour.groupSubject.teacherSubjects.filter(
-            (teacherSubject) =>
-              teacherSubject.teacherRoleName === subjectHour.lessonType.name
-          ),
+          date: exam.date.slice(0, 10),
+
+          name: exam.name,
+          maxScore: exam.maxScore,
         },
       };
       events.push(event);
@@ -76,22 +75,18 @@ const TeacherSchedule = () => {
             slotMaxTime={"22:25:00"}
             eventColor="3788d8"
             plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
-            initialView={"timeGridWeek"}
+            initialView={"dayGridMonth"}
             height={"70vh"}
             eventDidMount={(info) => {
+              console.log(info.event, "info");
               const tooltip = document.createElement("div");
               tooltip.classList.add("tooltip");
               const title = document.createElement("div");
               title.innerHTML = info.event.title;
               const additionalInfo = document.createElement("div");
               additionalInfo.classList.add("add-info");
-              additionalInfo.innerHTML = `<p>Room - ${info.event.extendedProps.room}<p/>`;
-              additionalInfo.innerHTML += `<p>${info.event.extendedProps.lessonType}<p/>`;
-              additionalInfo.innerHTML += info.event.extendedProps.teachers.map(
-                (teacher) => ` <p>Teacher - ${teacher.teacherName}<p/>`
-              );
-
-              //   additionalInfo.innerHTML += `<p>${info.event.extendedProps.teacher.}<p/>`;
+              additionalInfo.innerHTML = `<p>Max score : ${info.event.extendedProps.maxScore}<p/>`;
+              additionalInfo.innerHTML += `<p>Date : ${info.event.extendedProps.date}<p/>`;
 
               tooltip.appendChild(title);
               tooltip.appendChild(additionalInfo);
@@ -116,11 +111,10 @@ const TeacherSchedule = () => {
                   color: "white",
                   padding: "5px",
                   borderRadius: "5px",
+                  width: "100%",
                 }}
               >
-                <p>{arg.timeText}</p>
                 <p>{arg.event.title}</p>
-                <p>Room - {arg.event.extendedProps.room}</p>
               </div>
             )}
             events={events}
@@ -130,4 +124,4 @@ const TeacherSchedule = () => {
     </div>
   );
 };
-export default TeacherSchedule;
+export default TeacherExamsSchedule;

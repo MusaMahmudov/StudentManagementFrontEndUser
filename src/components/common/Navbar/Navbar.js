@@ -4,34 +4,62 @@ import "./navbar.scss";
 import { TokenContext } from "../../../contexts/TokenContext";
 import jwtDecode from "jwt-decode";
 import {
-  tokenEmailProperty,
-  tokenFullNameProperty,
   tokenRoleProperty,
   tokenUserNameProperty,
 } from "../../../utils/TokenProperties";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { getDecodedToken } from "../../../utils/GetToken";
+import PersonIcon from "@mui/icons-material/Person";
+import { Box, Popover } from "@mui/material";
+import Button from "@mui/material/Button";
+
 const Navbar = () => {
   const navigate = useNavigate();
   const { token } = useContext(TokenContext);
-  const [userInfo, setUserInfo] = useState({
+  const [cookie, setCookie, removeCookie] = useCookies(["tokenCookie"]);
+  const [userInformation, setUserInformation] = useState({
     userName: "",
-    roleName: "",
+    role: "",
   });
+
   useEffect(() => {
     if (token) {
       const decodedToken = jwtDecode(token);
-      setUserInfo({
+      setUserInformation({
         userName: decodedToken[tokenUserNameProperty],
-        roleName: decodedToken[tokenRoleProperty],
+        role: decodedToken[tokenRoleProperty],
       });
     }
   }, []);
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
   const handleLogout = () => {
     if (token) {
-      // authServices.Logout(token);
-      localStorage.removeItem("token");
-      window.location.href = "http://localhost:3000/SignIn";
+      const decodedToken = getDecodedToken();
+
+      if (decodedToken[tokenRoleProperty].includes("Teacher")) {
+        removeCookie("tokenTeacher");
+        removeCookie("expireDateTeacher");
+        localStorage.clear();
+        navigate("/SignIn");
+      } else if (decodedToken[tokenRoleProperty].includes("Student")) {
+        removeCookie("tokenStudent");
+        removeCookie("expireDateStudent");
+        localStorage.clear();
+        navigate("/SignIn");
+      }
     }
   };
 
@@ -42,12 +70,65 @@ const Navbar = () => {
           <img src={adnsuLogo} className="adnsu-logo" />
         </div>
         <div className="right-navbar">
-          <div>
-            <button onClick={() => handleLogout()}>Logout</button>
-          </div>
           <div className="user-info">
-            <h1>{userInfo.userName}</h1>
-            <p>{userInfo.roleName}</p>
+            <Button
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              aria-describedby={id}
+              variant="contained"
+              onClick={handleClick}
+            >
+              <span>
+                <PersonIcon sx={{ fontSize: 35, marginTop: 1 }} />
+              </span>
+              <span>
+                <h1>{userInformation.userName}</h1>
+                <p>
+                  {userInformation.role.includes("Teacher")
+                    ? "Teacher"
+                    : "Student"}
+                </p>
+              </span>
+            </Button>
+            <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+            >
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                <Button
+                  sx={{ padding: "10px 30px" }}
+                  onClick={() => navigate("MyProfile")}
+                >
+                  My Profile
+                </Button>
+                <Button
+                  sx={{ padding: "10px 10px", fontSize: "13px" }}
+                  onClick={() => navigate("ChangePassword")}
+                >
+                  Change Password
+                </Button>
+                <Button
+                  sx={{ padding: "10px 30px" }}
+                  onClick={() => handleLogout()}
+                >
+                  Logout
+                </Button>
+              </Box>
+            </Popover>
           </div>
         </div>
       </div>

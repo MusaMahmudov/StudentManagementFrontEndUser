@@ -33,24 +33,37 @@ import TeacherSubjectQuizExam from "./components/Teacher/teacherquizexam/Teacher
 import TeacherSubjectMidtermExam from "./components/Teacher/teachermidtermexam/TeacherMidtermExam";
 import TeacherSubjectProjectExam from "./components/Teacher/teacherprojectexam/TeacherProjectExam";
 import TeacherSubjectFinalExam from "./components/Teacher/teacherfinalexam/TeacherFinalExam";
+import SignIn from "./components/LoginPage/LoginPage";
+import { getDecodedToken, getToken } from "./utils/GetToken";
+import { ChangePassword } from "./components/ChangePassword/ChangePassword";
+import StudentExamsSchedule from "./components/Student/studentexamsschedule/StudentExamSchedule";
+import TeacherExamsSchedule from "./components/Teacher/teacherexamschedule/TeacherExamsSchedule";
 
 function App() {
-  const urlParams = new URLSearchParams(window.location.search);
-  localStorage.setItem("token", urlParams.get("token"));
+  // const urlParams = new URLSearchParams(window.location.search);
+  // localStorage.setItem("token", urlParams.get("token"));
   const queryClient = new QueryClient();
-
+  const token = getToken();
   const location = useLocation();
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  const decodedToken = jwtDecode(token);
+  // const token = localStorage.getItem("token");
+
+  const decodedToken = getDecodedToken();
 
   useEffect(() => {
-    if (location.pathname === "/" || location.pathname === "") {
-      if (decodedToken[tokenRoleProperty] === "Student")
+    if (token) {
+      if (
+        decodedToken[tokenRoleProperty] === "Admin" ||
+        decodedToken[tokenRoleProperty] === "Moderator"
+      ) {
+        navigate("/Error");
+      } else if (decodedToken[tokenRoleProperty] === "Student")
         navigate("/StudentDashboard");
       else if (decodedToken[tokenRoleProperty] === "Teacher") {
-        navigate(`/TeacherDashboard?token=${token}`);
+        navigate(`/TeacherDashboard`);
       }
+    } else {
+      navigate("/SignIn");
     }
   }, []);
 
@@ -63,8 +76,14 @@ function App() {
               path="/StudentDashboard"
               element={<StudentDashboard />}
             ></Route>
+            <Route path="/ChangePassword" element={<ChangePassword />}></Route>
+
             <Route path="Groups" element={<StudentGroups />}></Route>
             <Route path="StudentSchedule" element={<StudentSchedule />}></Route>
+            <Route
+              path="StudentExamsSchedule"
+              element={<StudentExamsSchedule />}
+            ></Route>
 
             <Route
               path="StudentSubjects/:Id"
@@ -74,6 +93,7 @@ function App() {
                 path="props/Teachers"
                 element={<StudentSubjectTeachers />}
               ></Route>
+
               <Route
                 path="props/Attendance"
                 element={<StudentAttendance />}
@@ -101,7 +121,10 @@ function App() {
               element={<TeacherDashboard />}
             ></Route>
             <Route path="TeacherSchedule" element={<TeacherSchedule />}></Route>
-
+            <Route
+              path="TeacherExamsSchedule"
+              element={<TeacherExamsSchedule />}
+            ></Route>
             <Route path="TeacherSubjects" element={<TeacherSubjects />}></Route>
             <Route
               path="TeacherSubjects/:Id"
@@ -129,6 +152,7 @@ function App() {
               ></Route>
             </Route>
           </Route>
+          <Route path="/SignIn" element={<SignIn />}></Route>
         </Routes>
       </QueryClientProvider>
     </div>

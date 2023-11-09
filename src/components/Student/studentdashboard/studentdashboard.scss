@@ -44,8 +44,58 @@
         }
       }
     }
+    & .numbers {
+      & .card-info {
+        & h1,
+        p {
+          margin: 0px;
+        }
+      }
+    }
+    & .todayLessons {
+      margin-top: 30px;
+      & .container {
+        & .lessons {
+          display: flex;
+          flex-direction: column;
+
+          & .lesson {
+            background: white;
+            border-radius: 10px;
+
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            & .lessonInfo {
+              & .info {
+                & h1,
+                p {
+                  margin: 4px;
+                }
+                & p {
+                  font-weight: 500;
+                  color: gray;
+                }
+                & h1 {
+                  font-size: 25px;
+                  font-weight: 600;
+                }
+              }
+            }
+            & .title {
+              & h1 {
+                font-weight: 900;
+                margin: 0px;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
+
 .cover {
   cursor: pointer;
   transition: 0.3s;

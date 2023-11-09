@@ -29,15 +29,19 @@
         flex-direction: column;
         color: white;
         align-items: center;
+        background-color: black;
+        border-radius: 10px;
         & h1,
         p {
           margin: 0px;
         }
         & h1 {
-          font-size: 15px;
+          font-weight: 900;
+          font-size: 12px;
         }
         & p {
-          font-size: 15px;
+          font-weight: 300;
+          font-size: 12px;
         }
       }
     }

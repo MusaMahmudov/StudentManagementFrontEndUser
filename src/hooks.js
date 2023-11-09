@@ -1,4 +1,5 @@
 import attendanceService from "./API/Services/AttendanceService";
+import { authService } from "./API/Services/AuthService";
 import { examResultService } from "./API/Services/ExamResultService";
 import examService from "./API/Services/ExamService";
 import groupSubjectService from "./API/Services/GroupSubjectService";
@@ -14,6 +15,7 @@ export const useService = () => {
   const attendanceServices = new attendanceService();
   const examResultServices = new examResultService();
   const examServices = new examService();
+  const authServices = new authService();
   return {
     examServices,
     examResultServices,
@@ -22,5 +24,6 @@ export const useService = () => {
     userServices,
     subjectHourServices,
     groupSubjectServices,
+    authServices,
   };
 };

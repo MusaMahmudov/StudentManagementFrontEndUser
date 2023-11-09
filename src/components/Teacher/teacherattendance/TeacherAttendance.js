@@ -15,7 +15,6 @@ export default function TeacherAttendance() {
 
   const [attendanceId, setAttendanceId] = useState(null);
   const [attendanceValue, setAttendanceValue] = useState({ isPresent: null });
-
   const { studentServices, subjectHourServices, attendanceServices } =
     useService();
   const studentQuery = useQuery([QueryKeys.getAttendancesForTeacherPage], () =>
