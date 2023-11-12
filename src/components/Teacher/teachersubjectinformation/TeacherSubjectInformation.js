@@ -1,24 +1,30 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom";
 import { TitleComponent } from "../../../UI/common/TitleComponent";
-import { Button, CircularProgress, stepButtonClasses } from "@mui/material";
+import {
+  BottomNavigation,
+  BottomNavigationAction,
+  Button,
+  CircularProgress,
+  stepButtonClasses,
+} from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { TokenContext } from "../../../contexts/TokenContext";
 import { TeacherSubjectContext } from "../../../contexts/TeacherSubjectContext";
+import RestoreIcon from "@mui/icons-material/Restore";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 const TeacherSubjectInformation = () => {
   const { token } = useContext(TokenContext);
-
+  const [value, setValue] = React.useState(0);
   const navigate = useNavigate();
   const [subjectInfo, setSubjectInfo] = useState();
   const { state } = useLocation();
   useEffect(() => {
     setSubjectInfo(state);
   }, []);
-
-  console.log("state", state);
-  console.log("subiNFO", subjectInfo);
-
+  console.log(subjectInfo, state, "SubjectInfo");
   return (
     <div className="main-part">
       <div className="container">
@@ -42,22 +48,35 @@ const TeacherSubjectInformation = () => {
           </div>
           <div className="subject-information-navigation">
             <ul>
+              {/* <BottomNavigation
+                showLabels
+                value={value}
+                onChange={(event, newValue) => {
+                  setValue(newValue);
+                }}
+              >
+                <BottomNavigationAction label="Recents" />
+                <BottomNavigationAction label="Favorites" />
+                <BottomNavigationAction label="Nearby" />
+              </BottomNavigation> */}
               <li>
                 <Button
                   variant="outlined"
-                  onClick={() => navigate(`props/Attendance?token=${token}`)}
+                  onClick={() => navigate(`props/Attendance`)}
                 >
                   Attendance
                 </Button>
               </li>
-              {state && state.teacherRoles && state.teacherRoles.length > 0 ? (
-                state.teacherRoles.map((teacherRole) => (
+              {state &&
+              state.teacherSubjects &&
+              state.teacherSubjects.length > 0 ? (
+                state.teacherSubjects.map((teacherRole) => (
                   <li key={teacherRole.id}>
                     <Button
                       variant="outlined"
                       onClick={() =>
-                        navigate(`props/Teachers?token=${token}`, {
-                          state: state.teacherRoles,
+                        navigate(`props/Teachers`, {
+                          state: state.teacherSubjects,
                         })
                       }
                     >
@@ -66,14 +85,14 @@ const TeacherSubjectInformation = () => {
                   </li>
                 ))
               ) : subjectInfo &&
-                subjectInfo.teacherRoles &&
-                subjectInfo.teacherRoles.length > 0 ? (
+                subjectInfo.teacherSubjects &&
+                subjectInfo.teacherSubjects.length > 0 ? (
                 <li>
                   <Button
                     variant="outlined"
                     onClick={() =>
-                      navigate(`props/Teachers?token=${token}`, {
-                        state: subjectInfo.teacherRoles,
+                      navigate(`props/Teachers`, {
+                        state: subjectInfo.teacherSubjects,
                       })
                     }
                   >
@@ -84,7 +103,7 @@ const TeacherSubjectInformation = () => {
                 <li>
                   <Button
                     variant="outlined"
-                    onClick={() => navigate(`props/Teachers?token=${token}`)}
+                    onClick={() => navigate(`props/Teachers`)}
                   >
                     Teachers
                   </Button>
@@ -97,9 +116,7 @@ const TeacherSubjectInformation = () => {
                     <Button
                       variant="outlined"
                       onClick={() =>
-                        navigate(
-                          `props/${exam.examType}/${exam.id}?token=${token}`
-                        )
+                        navigate(`props/${exam.examType}/${exam.id}`)
                       }
                     >
                       {exam.name}
@@ -114,9 +131,7 @@ const TeacherSubjectInformation = () => {
                     <Button
                       variant="outlined"
                       onClick={() =>
-                        navigate(
-                          `props/${exam.examType}/${exam.id}?token=${token}`
-                        )
+                        navigate(`props/${exam.examType}/${exam.id}`)
                       }
                     >
                       {exam.name}

@@ -107,7 +107,7 @@ export const ChangePassword = () => {
   }
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" sx={{ marginTop: 10 }}>
         <CssBaseline />
         <Box
           sx={{

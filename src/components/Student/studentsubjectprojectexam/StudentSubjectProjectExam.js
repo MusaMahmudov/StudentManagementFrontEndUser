@@ -21,7 +21,7 @@ const StudentSubjectProjectExam = () => {
   const examResultQuery = useQuery([QueryKeys.getExamQueryKeys], () =>
     examResultServices.getExamResultForExamForStudentPage(
       projectExamId,
-      personId,
+      personId ? personId : localStorage.getItem("studentId"),
       token
     )
   );

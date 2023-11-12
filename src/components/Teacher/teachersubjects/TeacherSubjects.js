@@ -15,7 +15,8 @@ import { useContext, useEffect, useState } from "react";
 import { TokenContext } from "../../../contexts/TokenContext";
 import { QueryKeys } from "../../../API/QueryKeys";
 import { useNavigate } from "react-router-dom";
-
+import NoResultAnimation from "../../../assets/animations/no-results.gif";
+import { getToken } from "../../../utils/GetToken";
 const TeacherSubjects = () => {
   const navigate = useNavigate();
   const { token, personId } = useContext(TokenContext);
@@ -23,7 +24,6 @@ const TeacherSubjects = () => {
   const [id, setId] = useState();
   const [yearFilter, setYearFilter] = useState(new Date().getFullYear());
   const [semesterFilter, setSemesterFilter] = useState();
-  console.log("personId", personId);
   useEffect(() => {
     console.log(new Date().getMonth());
     switch (new Date().getMonth()) {
@@ -49,12 +49,16 @@ const TeacherSubjects = () => {
 
   const groupSubjectQuery = useQuery(
     [QueryKeys.getGroupSubjectsForTeacherPage],
-    () => groupSubjectServices.getGroupSubjectForTeacherPage(personId, token)
+    () =>
+      groupSubjectServices.getGroupSubjectForTeacherPage(
+        personId ? personId : localStorage.getItem("teacherId"),
+        token ? token : getToken()
+      )
   );
   //   const groupSubjects = studentQuery.data?.data.mainGroup?.groupSubjects;
   const groupSubjects = groupSubjectQuery.data?.data;
   useEffect(() => {
-    setId(personId);
+    setId(personId ? personId : localStorage.getItem("teacherId"));
   }, [groupSubjectQuery.isError]);
   useEffect(() => {
     groupSubjectQuery.refetch();
@@ -80,7 +84,6 @@ const TeacherSubjects = () => {
           <section className="subjects">
             <Box
               sx={{
-                display: "flex",
                 flexWrap: "wrap",
                 p: 1,
                 m: 1,
@@ -153,9 +156,12 @@ const TeacherSubjects = () => {
                     display: "flex",
                     justifyContent: "center",
                     fontSize: 80,
+                    transform: "translateY(-10px)",
                   }}
                 >
-                  <h1 className="errorMessage">No subjects</h1>
+                  {/* <h1 className="errorMessage">No subjects</h1>
+                   */}
+                  <img src={NoResultAnimation}></img>
                 </div>
               )}
               {/* <div className="subject">

@@ -23,9 +23,11 @@ const StudentSchedule = () => {
   // );
   let events = [];
   const subjectHourQuery = useQuery([QueryKeys.getSubjectHoursByIdKey], () =>
-    subjectHourServices.getSubjectHoursForStudentSchedule(personId, token)
+    subjectHourServices.getSubjectHoursForStudentSchedule(
+      personId ? personId : localStorage.getItem("studentId"),
+      token
+    )
   );
-  console.log("data", subjectHourQuery.data?.data);
 
   if (subjectHourQuery.isLoading) {
     return (
@@ -34,6 +36,7 @@ const StudentSchedule = () => {
       </div>
     );
   }
+  console.log(subjectHourQuery.data?.data, "sufds");
 
   if (subjectHourQuery.isSuccess) {
     subjectHourQuery.data?.data.forEach((subjectHour) => {

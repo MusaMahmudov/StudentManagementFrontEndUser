@@ -13,19 +13,23 @@ import "tippy.js/animations/scale.css";
 import "tippy.js/themes/translucent.css";
 import "tippy.js/dist/tippy.css";
 import { CircularProgress } from "@mui/material";
+import { json } from "react-router-dom";
 const TeacherSchedule = () => {
   const { subjectHourServices } = useService();
   const { personId, token } = useContext(TokenContext);
-  const [teacherId, setTeacherId] = useState(personId);
 
   const subjectHoursQuery = useQuery([QueryKeys.getStudentByIdKey], () =>
     subjectHourServices.getSubjectHoursForTeacherSchedule(
-      teacherId ? teacherId : localStorage.getItem("teacherId"),
+      personId ? personId : localStorage.getItem("teacherId"),
       token
     )
   );
-
-  console.log(subjectHoursQuery.data?.data);
+  useEffect(() => {
+    localStorage.setItem(
+      "teacherSchedule",
+      JSON.stringify(subjectHoursQuery.data?.data)
+    );
+  }, [subjectHoursQuery.isSuccess]);
   const events = [];
   if (subjectHoursQuery.isLoading) {
     return (
@@ -90,8 +94,6 @@ const TeacherSchedule = () => {
               additionalInfo.innerHTML += info.event.extendedProps.teachers.map(
                 (teacher) => ` <p>Teacher - ${teacher.teacherName}<p/>`
               );
-
-              //   additionalInfo.innerHTML += `<p>${info.event.extendedProps.teacher.}<p/>`;
 
               tooltip.appendChild(title);
               tooltip.appendChild(additionalInfo);

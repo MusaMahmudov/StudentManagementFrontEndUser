@@ -17,7 +17,9 @@ import { queries } from "@testing-library/react";
 const StudentExamsSchedule = () => {
   const { subjectHourServices, examServices } = useService();
   const { personId, token } = useContext(TokenContext);
-  const [studentId, setStudentId] = useState(personId);
+  const [studentId, setStudentId] = useState(
+    personId ? personId : localStorage.getItem("studentId")
+  );
   let events = [];
   //   const subjectHourQuery = useQuery([QueryKeys.getSubjectHoursByIdKey], () =>
   //     subjectHourServices.getSubjectHoursForStudentSchedule(personId, token)

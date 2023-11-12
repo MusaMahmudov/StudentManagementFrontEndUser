@@ -34,10 +34,18 @@ import TeacherSubjectMidtermExam from "./components/Teacher/teachermidtermexam/T
 import TeacherSubjectProjectExam from "./components/Teacher/teacherprojectexam/TeacherProjectExam";
 import TeacherSubjectFinalExam from "./components/Teacher/teacherfinalexam/TeacherFinalExam";
 import SignIn from "./components/LoginPage/LoginPage";
-import { getDecodedToken, getToken } from "./utils/GetToken";
+import {
+  getDecodedToken,
+  getExpireDateToken,
+  getToken,
+  removeExpireDate,
+  removeToken,
+} from "./utils/GetToken";
 import { ChangePassword } from "./components/ChangePassword/ChangePassword";
 import StudentExamsSchedule from "./components/Student/studentexamsschedule/StudentExamSchedule";
 import TeacherExamsSchedule from "./components/Teacher/teacherexamschedule/TeacherExamsSchedule";
+import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
+import { TeacherSubjectTeachers } from "./components/Teacher/teachersubjectteachers/TeacherSubjectTeachers";
 
 function App() {
   // const urlParams = new URLSearchParams(window.location.search);
@@ -46,24 +54,32 @@ function App() {
   const token = getToken();
   const location = useLocation();
   const navigate = useNavigate();
-  // const token = localStorage.getItem("token");
-
+  const expireDate = getExpireDateToken();
+  const date = new Date();
+  const expire = new Date(expireDate);
   const decodedToken = getDecodedToken();
-
   useEffect(() => {
-    if (token) {
-      if (
-        decodedToken[tokenRoleProperty] === "Admin" ||
-        decodedToken[tokenRoleProperty] === "Moderator"
-      ) {
-        navigate("/Error");
-      } else if (decodedToken[tokenRoleProperty] === "Student")
-        navigate("/StudentDashboard");
-      else if (decodedToken[tokenRoleProperty] === "Teacher") {
-        navigate(`/TeacherDashboard`);
-      }
-    } else {
+    if (!token) {
       navigate("/SignIn");
+      return;
+    } else if (expire < date) {
+      removeExpireDate();
+      removeToken();
+      navigate("/SignIn");
+    } else if (
+      decodedToken[tokenRoleProperty] === "Admin" ||
+      decodedToken[tokenRoleProperty] === "Moderator"
+    ) {
+      removeExpireDate();
+      removeToken();
+      navigate("/SignIn");
+    } else if (location.pathname === "/" || location.pathname === "") {
+      if (decodedToken[tokenRoleProperty] === "Teacher") {
+        navigate("/TeacherSchedule");
+      }
+      if (decodedToken[tokenRoleProperty] === "Student") {
+        navigate("/decodedToken");
+      }
     }
   }, []);
 
@@ -72,10 +88,10 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route
+            {/* <Route
               path="/StudentDashboard"
               element={<StudentDashboard />}
-            ></Route>
+            ></Route> */}
             <Route path="/ChangePassword" element={<ChangePassword />}></Route>
 
             <Route path="Groups" element={<StudentGroups />}></Route>
@@ -116,20 +132,26 @@ function App() {
               ></Route>
             </Route>
             <Route path="StudentSubjects" element={<StudentSubjects />}></Route>
-            <Route
+            {/* <Route
               path="TeacherDashboard"
               element={<TeacherDashboard />}
-            ></Route>
+            ></Route> */}
             <Route path="TeacherSchedule" element={<TeacherSchedule />}></Route>
             <Route
               path="TeacherExamsSchedule"
               element={<TeacherExamsSchedule />}
             ></Route>
             <Route path="TeacherSubjects" element={<TeacherSubjects />}></Route>
+
             <Route
               path="TeacherSubjects/:Id"
               element={<TeacherSubjectInformation />}
             >
+              <Route
+                path="props/Teachers"
+                element={<TeacherSubjectTeachers />}
+              ></Route>
+
               <Route
                 path="props/Attendance"
                 element={<TeacherAttendance />}
@@ -152,6 +174,8 @@ function App() {
               ></Route>
             </Route>
           </Route>
+          <Route path="/ForgotPassword" element={<ForgotPassword />}></Route>
+
           <Route path="/SignIn" element={<SignIn />}></Route>
         </Routes>
       </QueryClientProvider>

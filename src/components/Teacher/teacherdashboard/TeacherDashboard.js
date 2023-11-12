@@ -4,13 +4,15 @@ import { tokenFullNameProperty } from "../../../utils/TokenProperties";
 
 const TeacherDashboard = () => {
   const { decodedToken } = useContext(TokenContext);
-  const teacherFullName = decodedToken[tokenFullNameProperty];
+  const teacherFullName = decodedToken[tokenFullNameProperty]
+    ? decodedToken[tokenFullNameProperty]
+    : null;
   return (
     <div className="main-part">
       <div className="container">
         <section className="title">
           <div className="title-left">
-            <h1>Welcome {teacherFullName}</h1>
+            <h1>Welcome {teacherFullName ?? ""}</h1>
           </div>
           <div className="title-right">
             <h1>Home / Teacher</h1>

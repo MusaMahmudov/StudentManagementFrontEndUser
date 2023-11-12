@@ -20,6 +20,7 @@ import { QueryKeys } from "../../../API/QueryKeys";
 import jwtDecode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import tippy from "tippy.js";
+import NoResultAnimation from "../../../assets/animations/no-results.gif";
 
 const StudentSubjects = () => {
   const navigate = useNavigate();
@@ -33,12 +34,11 @@ const StudentSubjects = () => {
     [QueryKeys.getGroupSubjectsForStudentPage],
     () =>
       groupSubjectServices.getGroupSubjectForSubjectsForStudentPage(
-        personId,
+        personId ? personId : localStorage.getItem("studentId"),
         token
       )
   );
-  console.log("subjectDate", groupSubjectQuery.data?.data);
-  console.log(personId, "Id");
+
   useEffect(() => {
     switch (new Date().getMonth()) {
       case 8:
@@ -77,7 +77,7 @@ const StudentSubjects = () => {
   }, []);
   const groupSubjects = groupSubjectQuery.data?.data;
   useEffect(() => {
-    setId(personId);
+    setId(personId ? personId : localStorage.getItem("studentId"));
   }, [groupSubjectQuery.isError]);
   useEffect(() => {
     groupSubjectQuery.refetch();
@@ -113,17 +113,18 @@ const StudentSubjects = () => {
         <TitleComponent child1={"Subjects"} child2={"Student / Subjects"} />
         <section className="content">
           <section className="subjects">
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                p: 1,
-                m: 1,
-                bgcolor: "background.paper",
-                borderRadius: 1,
-              }}
-            >
-              {groupSubjects &&
+            {groupSubjects &&
+            groupSubjects
+              .filter((groupSubject) =>
+                semesterFilter === ""
+                  ? groupSubject
+                  : groupSubject.semester === semesterFilter
+              )
+              .filter((groupSubject) =>
+                yearFilter === ""
+                  ? groupSubject
+                  : groupSubject.year === yearFilter
+              ).length > 0 ? (
               groupSubjects
                 .filter((groupSubject) =>
                   semesterFilter === ""
@@ -134,68 +135,56 @@ const StudentSubjects = () => {
                   yearFilter === ""
                     ? groupSubject
                     : groupSubject.year === yearFilter
-                ).length > 0 ? (
-                groupSubjects
-                  .filter((groupSubject) =>
-                    semesterFilter === ""
-                      ? groupSubject
-                      : groupSubject.semester === semesterFilter
-                  )
-                  .filter((groupSubject) =>
-                    yearFilter === ""
-                      ? groupSubject
-                      : groupSubject.year === yearFilter
-                  )
-                  .map((groupSubject) => (
-                    <div key={groupSubject.id} className="subject">
-                      <div className="box">
-                        <div className="box-top">
-                          <div className="box-top-title">
-                            <h1 className="left">
-                              <InfoIcon className="info-icon" />
-                              {groupSubject.subject.name}
-                            </h1>
-                            <h1 className="right">{groupSubject.year}</h1>
-                          </div>
-                          <div className="box-top-middle">
-                            <section className="group">
-                              <h1>Group : {groupSubject.groupName}</h1>
-                            </section>
-                            <section className="Credits">
-                              <h1>Credits : {groupSubject.credits}</h1>
-                            </section>
-                          </div>
+                )
+                .map((groupSubject) => (
+                  <div key={groupSubject.id} className="subject">
+                    <div className="box">
+                      <div className="box-top">
+                        <div className="box-top-title">
+                          <h1 className="left">
+                            <InfoIcon className="info-icon" />
+                            {groupSubject.subject.name}
+                          </h1>
+                          <h1 className="right">{groupSubject.year}</h1>
                         </div>
-                        <div
-                          className="box-bottom"
-                          onClick={() =>
-                            navigate(`${groupSubject.id}?token=${token}`, {
-                              state: groupSubjectQuery.data?.data.find(
-                                (groupSub) => groupSub.id === groupSubject.id
-                              ),
-                            })
-                          }
-                        >
-                          <div className="box-bottom-navigate">
-                            <p>Show More</p>
-                          </div>
+                        <div className="box-top-middle">
+                          <section className="group">
+                            <h1>Group : {groupSubject.groupName}</h1>
+                          </section>
+                          <section className="Credits">
+                            <h1>Credits : {groupSubject.credits}</h1>
+                          </section>
+                        </div>
+                      </div>
+                      <div
+                        className="box-bottom"
+                        onClick={() =>
+                          navigate(`${groupSubject.id}?token=${token}`, {
+                            state: groupSubjectQuery.data?.data.find(
+                              (groupSub) => groupSub.id === groupSubject.id
+                            ),
+                          })
+                        }
+                      >
+                        <div className="box-bottom-navigate">
+                          <p>Show More</p>
                         </div>
                       </div>
                     </div>
-                  ))
-              ) : (
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    fontSize: 100,
-                  }}
-                >
-                  <h1 className="errorMessage">No subjects</h1>
-                </div>
-              )}
-            </Box>
+                  </div>
+                ))
+            ) : (
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  fontSize: 100,
+                }}
+              >
+                <img src={NoResultAnimation}></img>
+              </div>
+            )}
           </section>
           <section className="subjects-filter">
             <div className="subjects-filter-content">

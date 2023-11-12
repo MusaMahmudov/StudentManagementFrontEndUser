@@ -17,12 +17,11 @@ import { queries } from "@testing-library/react";
 const TeacherExamsSchedule = () => {
   const { subjectHourServices, examServices } = useService();
   const { personId, token } = useContext(TokenContext);
-  const [teacherId, setTeacherId] = useState(personId);
   let events = [];
 
   const examsQuery = useQuery([QueryKeys.getExamQueryKeys], () =>
     examServices.getExamsForExamsScheduleForTeacherPage(
-      teacherId ? teacherId : localStorage.getItem("teacherId"),
+      personId ? personId : localStorage.getItem("teacherId"),
       token
     )
   );

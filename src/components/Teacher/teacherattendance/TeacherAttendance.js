@@ -6,13 +6,13 @@ import { QueryKeys } from "../../../API/QueryKeys";
 import { TokenContext } from "../../../contexts/TokenContext";
 import { DataGrid, GridCellParams } from "@mui/x-data-grid";
 import SimpleDialog from "../../../UI/common/SimpleDialog";
-import { Alert, Box, LinearProgress } from "@mui/material";
+import { Alert, Box, LinearProgress, Snackbar } from "@mui/material";
 export default function TeacherAttendance() {
   const { Id: groupSubjectId } = useParams();
   const { token, personId, personFullName } = useContext(TokenContext);
   const [page, setPage] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(5);
-
+  const [openError, setOpenError] = useState(false);
   const [attendanceId, setAttendanceId] = useState(null);
   const [attendanceValue, setAttendanceValue] = useState({ isPresent: null });
   const { studentServices, subjectHourServices, attendanceServices } =
@@ -26,8 +26,12 @@ export default function TeacherAttendance() {
       token
     )
   );
-  console.log("studentQuery", studentQuery.data?.data);
-  console.log("subjectHourQuery", subjectHourQuery.data?.data);
+  const handleErrorOpen = () => {
+    setOpenError(true);
+  };
+  const handleErrorClose = () => {
+    setOpenError(false);
+  };
 
   const mutate = useMutation(
     () =>
@@ -37,6 +41,7 @@ export default function TeacherAttendance() {
         token
       ),
     {
+      onError: () => handleErrorOpen(),
       onSuccess: () => subjectHourQuery.refetch(),
     }
   );
@@ -149,33 +154,6 @@ export default function TeacherAttendance() {
     );
   };
 
-  // const handleSelectChange = (event, params) => {
-  //   console.log(params);
-  //   const date = params.colDef.field.substring(0, 10);
-  //   const subjectHour = subjectHourQuery.data?.data.find(
-  //     (subjectHour) => subjectHour.date.substring(0, 10) == date
-  //   );
-  //   const attendanceId = subjectHour.attendances.find(
-  //     (attendance) => attendance.student.id === params.id
-  //   )?.id;
-  //   setAttendanceId(attendanceId);
-  //   setAttendanceValue({
-  //     isPresent:
-  //       event.target.value === "true"
-  //         ? true
-  //         : event.target.value === "false"
-  //         ? false
-  //         : null,
-  //   });
-  //   setAttendanceValue({
-  //     isPresent:
-  //       event.target.value === "true"
-  //         ? true
-  //         : event.target.value === "false"
-  //         ? false
-  //         : null,
-  //   });
-  // };
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -183,8 +161,7 @@ export default function TeacherAttendance() {
   };
   const handleClose = (params, value) => {
     setOpen(false);
-    console.log(value);
-    console.log("paramas", params);
+
     const date = params.colDef.field.substring(0, 10);
     const subjectHour = subjectHourQuery.data?.data.find(
       (subjectHour) => subjectHour.date.substring(0, 10) == date
@@ -196,7 +173,6 @@ export default function TeacherAttendance() {
     setAttendanceValue({
       isPresent: value === "Present" ? true : value === "Absent" ? false : null,
     });
-    // setAttendanceValue(value);
   };
 
   useEffect(() => {
@@ -206,7 +182,12 @@ export default function TeacherAttendance() {
   }, [attendanceValue, attendanceId]);
 
   const columns = [
-    { field: "fullName", headerName: "Full Name", width: 200 },
+    {
+      field: "fullName",
+      headerName: "Full Name",
+      width: 200,
+      headerClassName: "MuiDataGrid-colCell",
+    },
     ...currentDates.map((date) => ({
       field: date,
       headerName: date.substring(0, 18),
@@ -221,52 +202,6 @@ export default function TeacherAttendance() {
           onClose={(value) => handleClose(params, value)}
         />
       ),
-      // renderEditCell: (params) => (
-      //   <select
-      //     value={params.value}
-      //     onChange={(e) => handleSelectChange(e, params)}
-      //     style={{
-      //       width: "100%",
-      //       height: "100%",
-      //       padding: "8px",
-      //       fontSize: "13px",
-      //       border: "none",
-      //     }}
-      //   >
-      //     <option
-      //       style={{
-      //         color: "black",
-      //         fontSize: "15px",
-      //         padding: "20px",
-      //       }}
-      //       value={null}
-      //     >
-      //       No Info
-      //     </option>
-      //     <option
-      //       style={{
-      //         backgroundColor: "lightblue",
-      //         color: "black",
-      //         fontSize: "15px",
-      //         padding: "20px",
-      //       }}
-      //       value={true}
-      //     >
-      //       Present
-      //     </option>
-      //     <option
-      //       style={{
-      //         backgroundColor: "lightblue",
-      //         color: "black",
-      //         fontSize: "15px",
-      //         padding: "20px",
-      //       }}
-      //       value={false}
-      //     >
-      //       Absent
-      //     </option>
-      //   </select>
-      // ),
     })),
   ];
   const handlePageChange = (newPage) => {
@@ -298,11 +233,20 @@ export default function TeacherAttendance() {
         pageSize={columnsPerPage}
         rowCount={rows.length}
       />
-      {/* <SimpleDialog
-        selectedValue={attendanceValue}
-        open={open}
-        onClose={handleClose}
-      /> */}
+      <Snackbar
+        open={openError}
+        autoHideDuration={6000}
+        onClose={handleErrorClose}
+      >
+        <Alert
+          onClose={handleErrorClose}
+          severity="error"
+          sx={{ width: "100%" }}
+          variant="filled"
+        >
+          You can't do that
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

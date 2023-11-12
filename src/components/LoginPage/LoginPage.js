@@ -44,7 +44,7 @@ export default function SignIn() {
   useEffect(() => {
     const existingToken = getToken();
     if (existingToken) {
-      return navigate("/ErrorPage", { replace: true });
+      return navigate("/ErrorPage2");
     }
     // if (existingToken) {
     //   // navigate("Error");
@@ -105,32 +105,28 @@ export default function SignIn() {
       setToken(res.data?.token), setExpireDate(res.data?._expireDate)
     ),
   });
-  if (mutate.isSuccess) {
-    // if (user.rememberMe) {
-    //   localStorage.setItem("token", { value: user, expire: expireDate });
-    // } else {
-
-    // localStorage.setItem("expireDate", expireDate);
-    // localStorage.setItem("token", token);
-    // localStorage.setItem("expireDate", expireDate);
-    var decodedToken = jwtDecode(token);
-    if (
-      decodedToken[tokenRoleProperty] === "Admin" ||
-      decodedToken[tokenRoleProperty] === "Moderator"
-    ) {
-      handleClick();
-    } else {
-      if (decodedToken[tokenRoleProperty].includes("Student")) {
-        tokenCookie.set("tokenStudent", token);
-        tokenCookie.set("expireDateStudent", expireDate);
-        navigate("/StudentDashboard");
-      } else if (decodedToken[tokenRoleProperty].includes("Teacher")) {
-        tokenCookie.set("tokenTeacher", token);
-        tokenCookie.set("expireDateTeacher", expireDate);
-        navigate("/TeacherDashboard");
+  useEffect(() => {
+    if (mutate.isSuccess) {
+      var decodedToken = jwtDecode(token);
+      console.log(decodedToken[tokenRoleProperty], "Role");
+      if (
+        decodedToken[tokenRoleProperty] === "Admin" ||
+        decodedToken[tokenRoleProperty] === "Moderator"
+      ) {
+        handleClick();
+      } else {
+        if (decodedToken[tokenRoleProperty].includes("Student")) {
+          tokenCookie.set("tokenStudent", token);
+          tokenCookie.set("expireDateStudent", expireDate);
+          navigate("/StudentSchedule");
+        } else if (decodedToken[tokenRoleProperty].includes("Teacher")) {
+          tokenCookie.set("tokenTeacher", token);
+          tokenCookie.set("expireDateTeacher", expireDate);
+          navigate("/TeacherSchedule");
+        }
       }
     }
-  }
+  }, [mutate]);
 
   const handleSubmit = (event) => {
     event.preventDefault();

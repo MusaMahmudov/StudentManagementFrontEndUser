@@ -9,12 +9,17 @@ import {
 } from "../../../utils/TokenProperties";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import { getDecodedToken } from "../../../utils/GetToken";
+import {
+  getDecodedToken,
+  removeExpireDate,
+  removeToken,
+} from "../../../utils/GetToken";
 import PersonIcon from "@mui/icons-material/Person";
 import { Box, Popover } from "@mui/material";
 import Button from "@mui/material/Button";
+import ReorderIcon from "@mui/icons-material/Reorder";
 
-const Navbar = () => {
+const Navbar = ({ onToggleSidebar }) => {
   const navigate = useNavigate();
   const { token } = useContext(TokenContext);
   const [cookie, setCookie, removeCookie] = useCookies(["tokenCookie"]);
@@ -48,17 +53,44 @@ const Navbar = () => {
   const handleLogout = () => {
     if (token) {
       const decodedToken = getDecodedToken();
+      if (Array.isArray(decodedToken[tokenRoleProperty])) {
+        if (decodedToken[tokenRoleProperty].includes("Teacher")) {
+          removeExpireDate();
 
-      if (decodedToken[tokenRoleProperty].includes("Teacher")) {
-        removeCookie("tokenTeacher");
-        removeCookie("expireDateTeacher");
-        localStorage.clear();
-        navigate("/SignIn");
-      } else if (decodedToken[tokenRoleProperty].includes("Student")) {
-        removeCookie("tokenStudent");
-        removeCookie("expireDateStudent");
-        localStorage.clear();
-        navigate("/SignIn");
+          removeToken();
+          localStorage.clear();
+          navigate("/SignIn");
+          if (window.location.pathname !== "/SignIn") {
+            navigate("/SignIn");
+          }
+        } else if (decodedToken[tokenRoleProperty].includes("Student")) {
+          removeExpireDate();
+
+          removeToken();
+          localStorage.clear();
+          navigate("/SignIn");
+          if (window.location.pathname !== "/SignIn") {
+            navigate("/SignIn");
+          }
+        }
+      } else {
+        if (decodedToken[tokenRoleProperty] === "Teacher") {
+          removeExpireDate();
+          removeToken();
+          localStorage.clear();
+          navigate("/SignIn");
+          if (window.location.pathname !== "/SignIn") {
+            navigate("/SignIn");
+          }
+        } else if (decodedToken[tokenRoleProperty] === "Student") {
+          removeExpireDate();
+          removeToken();
+          localStorage.clear();
+          navigate("/SignIn");
+          if (window.location.pathname !== "/SignIn") {
+            navigate("/SignIn");
+          }
+        }
       }
     }
   };
@@ -67,8 +99,17 @@ const Navbar = () => {
     <div className="header">
       <div className="container">
         <div className="left-navbar">
-          <img src={adnsuLogo} className="adnsu-logo" />
+          <div className="logo">
+            <img src={adnsuLogo} className="adnsu-logo" />
+          </div>
+
+          <div className="sidebar-toggle">
+            <button className="toggle-button" onClick={onToggleSidebar}>
+              <ReorderIcon />
+            </button>
+          </div>
         </div>
+
         <div className="right-navbar">
           <div className="user-info">
             <Button
@@ -108,13 +149,15 @@ const Navbar = () => {
                 horizontal: "right",
               }}
             >
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <Button
+              <Box
+                sx={{ display: "flex", flexDirection: "column", zIndex: 99999 }}
+              >
+                {/* <Button
                   sx={{ padding: "10px 30px" }}
                   onClick={() => navigate("MyProfile")}
                 >
                   My Profile
-                </Button>
+                </Button> */}
                 <Button
                   sx={{ padding: "10px 10px", fontSize: "13px" }}
                   onClick={() => navigate("ChangePassword")}

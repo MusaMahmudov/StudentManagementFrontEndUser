@@ -10,4 +10,7 @@ export class userService extends HTTPClient {
   async getUserById(id, token) {
     return await this.getById("Accounts", id, token);
   }
+  async forgotPassword(body) {
+    return await this.post("Accounts/ForgotPassword", body);
+  }
 }

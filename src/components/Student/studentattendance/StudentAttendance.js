@@ -25,7 +25,7 @@ export default function StudentAttendance() {
   const { attendanceServices } = useService();
   const attendanceQuery = useQuery([QueryKeys.getStudentByIdKey], () =>
     attendanceServices.getAttendanceForStudentAttendacePage(
-      personId,
+      personId ? personId : localStorage.getItem("studentId"),
       subjectId,
       token
     )

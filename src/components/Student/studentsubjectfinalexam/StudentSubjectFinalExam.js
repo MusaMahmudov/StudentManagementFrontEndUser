@@ -27,7 +27,7 @@ const StudentSubjectFinalExam = () => {
   const examResultQuery = useQuery([QueryKeys.getExamQueryKeys], () =>
     examResultServices.getExamResultForExamForStudentPage(
       finalExamId,
-      personId,
+      personId ? personId : localStorage.getItem("studentId"),
       token
     )
   );
@@ -36,7 +36,7 @@ const StudentSubjectFinalExam = () => {
     () =>
       examResultServices.getExamResultsForFinalExamForStudentPage(
         groupSubjectId,
-        personId,
+        personId ? personId : localStorage.getItem("studentId"),
         token
       )
   );

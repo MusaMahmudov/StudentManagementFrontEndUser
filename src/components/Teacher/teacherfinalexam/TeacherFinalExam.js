@@ -17,7 +17,7 @@ import { Query, useMutation, useQueries, useQuery } from "react-query";
 import { QueryKeys } from "../../../API/QueryKeys";
 const TeacherSubjectFinalExam = () => {
   const { subjectInfo } = useContext(TeacherSubjectContext);
-  const { token, personId, personFullName } = useContext(TokenContext);
+  const { token } = useContext(TokenContext);
   const { Id: finalExamId } = useParams();
   const [exam, setExam] = useState();
   const [error, setError] = useState();

@@ -6,6 +6,7 @@
     & .content {
       display: flex;
       & .subjects-filter {
+        transform: translateY(10px);
         box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
         border-radius: 10px;
         background: white;
@@ -19,7 +20,9 @@
       }
       & .subjects {
         color: white;
+        border-radius: 10px;
         width: 75%;
+
         & .subject {
           padding: 20px 40px;
 
@@ -71,6 +74,32 @@
                   margin: 0px;
                 }
               }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+@media screen and (max-width: 950px) {
+  .main-part {
+    & .container {
+      & .content {
+        flex-direction: column-reverse !important;
+        align-items: center;
+        & .subjects-filter {
+          width: 60%;
+        }
+        & .subjects {
+          margin-top: 20px;
+          border: 1px solid red;
+          align-items: center;
+          & .subject {
+            display: flex;
+            justify-content: center;
+            & .box {
+              height: 200px;
+              width: 220px !important;
             }
           }
         }

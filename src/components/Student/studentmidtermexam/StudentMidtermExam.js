@@ -22,7 +22,7 @@ const StudentSubjectMidtermExam = () => {
   const examResultQuery = useQuery([QueryKeys.getExamQueryKeys], () =>
     examResultServices.getExamResultForExamForStudentPage(
       midtermExamId,
-      personId,
+      personId ? personId : localStorage.getItem("studentId"),
       token
     )
   );

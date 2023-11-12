@@ -17,7 +17,7 @@ import { Query, useMutation, useQueries, useQuery } from "react-query";
 import { QueryKeys } from "../../../API/QueryKeys";
 const TeacherSubjectMidtermExam = () => {
   const { subjectInfo } = useContext(TeacherSubjectContext);
-  const { token, personId, personFullName } = useContext(TokenContext);
+  const { token, personFullName } = useContext(TokenContext);
   const { Id: midtermExamId } = useParams();
   const [exam, setExam] = useState();
   const [error, setError] = useState();
@@ -31,7 +31,6 @@ const TeacherSubjectMidtermExam = () => {
   const examQuery = useQuery([QueryKeys.getExamQueryKeys], () =>
     examServices.getExamForExamsforTeacherPageAsign(midtermExamId)
   );
-  console.log(studentQuery.data?.data);
 
   const [newExamResult, setNewExamResult] = useState({
     studentId: null,
