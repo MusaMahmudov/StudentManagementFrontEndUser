@@ -23,7 +23,13 @@ const Layout = () => {
   const [personFullName, setPersonFullName] = useState();
   const navigate = useNavigate();
   const token = getToken();
-  const decodedToken = jwtDecode(token);
+  useEffect(() => {
+    if (!token) {
+      navigate("/ErrorPage");
+      return;
+    }
+  }, []);
+  const decodedToken = getDecodedToken();
   const [isOpen, setIsOpen] = useState();
 
   const userQuery = useQuery([QueryKeys.getUserById], () =>
@@ -51,11 +57,11 @@ const Layout = () => {
       if (decodedToken[tokenRoleProperty].includes("Teacher")) {
         setPersonFullName(decodedToken[tokenFullNameProperty]);
         setPersonId(userQuery.data?.data.teacher.id);
-        localStorage.setItem("teacherId", userQuery.data?.data.teacher.id);
+        localStorage.setItem("teacherId", userQuery.data?.data.teacher?.id);
       } else if (decodedToken[tokenRoleProperty].includes("Student")) {
         setPersonFullName(decodedToken[tokenFullNameProperty]);
         setPersonId(userQuery.data?.data.student?.id);
-        localStorage.setItem("studentId", userQuery.data?.data.student.id);
+        localStorage.setItem("studentId", userQuery.data?.data.student?.id);
       }
     } else {
       navigate("/SignIn");

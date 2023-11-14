@@ -1,19 +1,8 @@
-import logo from "./logo.svg";
 import "./App.css";
-import {
-  BrowserRouter,
-  Route,
-  Router,
-  Routes,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import Layout from "./components/layout/Layout";
-import StudentDashboard from "./components/Student/studentdashboard/StudentDashboard";
-import TeacherDashboard from "./components/Teacher/teacherdashboard/TeacherDashboard";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { useEffect } from "react";
-import StudentGroups from "./components/Student/groups/Groups";
 import StudentSubjects from "./components/Student/studentsubjects/StudentSubjects";
 import StudentSubjectInformation from "./components/Student/studentsubjectinformation/StudentSubjectInformation";
 import StudentSubjectFinalExam from "./components/Student/studentsubjectfinalexam/StudentSubjectFinalExam";
@@ -23,7 +12,6 @@ import StudentSubjectQuizExam from "./components/Student/studentsubjectquizexam/
 import StudentSubjectProjectExam from "./components/Student/studentsubjectprojectexam/StudentSubjectProjectExam";
 import { StudentSubjectTeachers } from "./components/Student/studentsubjectteachers/StudentSubjectTeachers";
 import StudentAttendance from "./components/Student/studentattendance/StudentAttendance";
-import jwtDecode from "jwt-decode";
 import { tokenRoleProperty } from "./utils/TokenProperties";
 import TeacherSubjects from "./components/Teacher/teachersubjects/TeacherSubjects";
 import TeacherSchedule from "./components/Teacher/teacherschedule/TeacherSchedule";
@@ -46,6 +34,7 @@ import StudentExamsSchedule from "./components/Student/studentexamsschedule/Stud
 import TeacherExamsSchedule from "./components/Teacher/teacherexamschedule/TeacherExamsSchedule";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 import { TeacherSubjectTeachers } from "./components/Teacher/teachersubjectteachers/TeacherSubjectTeachers";
+import ErrorPage from "./components/ErrorPage/ErrorPage";
 
 function App() {
   // const urlParams = new URLSearchParams(window.location.search);
@@ -74,11 +63,20 @@ function App() {
       removeToken();
       navigate("/SignIn");
     } else if (location.pathname === "/" || location.pathname === "") {
-      if (decodedToken[tokenRoleProperty] === "Teacher") {
-        navigate("/TeacherSchedule");
-      }
-      if (decodedToken[tokenRoleProperty] === "Student") {
-        navigate("/decodedToken");
+      if (!Array.isArray(decodedToken[tokenRoleProperty])) {
+        if (decodedToken[tokenRoleProperty] === "Teacher") {
+          navigate("/TeacherSchedule");
+        }
+        if (decodedToken[tokenRoleProperty] === "Student") {
+          navigate("/StudentSchedule");
+        }
+      } else {
+        if (decodedToken[tokenRoleProperty].includes("Teacher")) {
+          navigate("/TeacherSchedule");
+        }
+        if (decodedToken[tokenRoleProperty].includes("Student")) {
+          navigate("/StudentSchedule");
+        }
       }
     }
   }, []);
@@ -88,13 +86,8 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Routes>
           <Route path="/" element={<Layout />}>
-            {/* <Route
-              path="/StudentDashboard"
-              element={<StudentDashboard />}
-            ></Route> */}
             <Route path="/ChangePassword" element={<ChangePassword />}></Route>
 
-            <Route path="Groups" element={<StudentGroups />}></Route>
             <Route path="StudentSchedule" element={<StudentSchedule />}></Route>
             <Route
               path="StudentExamsSchedule"
@@ -132,10 +125,7 @@ function App() {
               ></Route>
             </Route>
             <Route path="StudentSubjects" element={<StudentSubjects />}></Route>
-            {/* <Route
-              path="TeacherDashboard"
-              element={<TeacherDashboard />}
-            ></Route> */}
+
             <Route path="TeacherSchedule" element={<TeacherSchedule />}></Route>
             <Route
               path="TeacherExamsSchedule"
@@ -175,7 +165,9 @@ function App() {
             </Route>
           </Route>
           <Route path="/ForgotPassword" element={<ForgotPassword />}></Route>
+          <Route path="*" element={<ErrorPage />}></Route>
 
+          <Route path="/ErrorPage" element={<ErrorPage />}></Route>
           <Route path="/SignIn" element={<SignIn />}></Route>
         </Routes>
       </QueryClientProvider>

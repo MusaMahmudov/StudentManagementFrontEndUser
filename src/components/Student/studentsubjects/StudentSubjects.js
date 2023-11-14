@@ -61,9 +61,6 @@ const StudentSubjects = () => {
     }
   }, []);
 
-  // const studentQuery = useQuery([QueryKeys.getStudentByIdKey], () =>
-  //   studentServices.getStudentByIdForStudentPage(personId, token)
-  // );
   const renderTooltip = (target) => {
     tippy(target, {
       content: "Additional information",
@@ -159,7 +156,7 @@ const StudentSubjects = () => {
                       <div
                         className="box-bottom"
                         onClick={() =>
-                          navigate(`${groupSubject.id}?token=${token}`, {
+                          navigate(`${groupSubject.id}/props/Attendance`, {
                             state: groupSubjectQuery.data?.data.find(
                               (groupSub) => groupSub.id === groupSubject.id
                             ),

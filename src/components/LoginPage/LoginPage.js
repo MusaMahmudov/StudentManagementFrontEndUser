@@ -44,40 +44,10 @@ export default function SignIn() {
   useEffect(() => {
     const existingToken = getToken();
     if (existingToken) {
-      return navigate("/ErrorPage2");
+      return navigate("/ErrorPage");
     }
-    // if (existingToken) {
-    //   // navigate("Error");
-    //   const decodedCheckToken = jwtDecode(existingToken);
-    //   switch (decodedCheckToken[tokenRoleProperty]) {
-    //     case "Admin":
-    //       window.location.href = "http://localhost:3000/AdminDashboard";
-    //       return console.log("");
-    //     case "Moderator":
-    //       window.location.href = "http://localhost:3000/AdminDashboard";
-    //       return console.log("");
-    //     case "Student":
-    //       window.location.href = "http://localhost:3001/Student";
-    //       return console.log("");
-    //   }
-    //   // const decodedCheckToken = jwtDecode(existingToken);
-    //   // switch (decodedCheckToken[tokenRoleProperty]) {
-    //   //   case "Admin":
-    //   //     navigate("AdminDashboard");
-    //   //     return;
-    //   //   case "Moderator":
-    //   //     navigate("AdminDashboard");
-    //   //     return;
-    //   //   case "Student":
-    //   //     navigate("AdminDashboard");
-    //   //     return;
-    //   //   default:
-    //   //     return <ErrorPage />;
-    //   // }
-    // }
   }, []);
   const { authServices } = useService();
-  const [error, setError] = useState();
   const [token, setToken] = useState();
   const [expireDate, setExpireDate] = useState();
   const [user, setUser] = useState({
@@ -85,7 +55,6 @@ export default function SignIn() {
     password: "",
     rememberMe: false,
   });
-  console.log(user);
   const [open, setOpen] = useState(false);
   const tokenCookie = new Cookies();
   const handleClick = () => {
@@ -108,7 +77,6 @@ export default function SignIn() {
   useEffect(() => {
     if (mutate.isSuccess) {
       var decodedToken = jwtDecode(token);
-      console.log(decodedToken[tokenRoleProperty], "Role");
       if (
         decodedToken[tokenRoleProperty] === "Admin" ||
         decodedToken[tokenRoleProperty] === "Moderator"

@@ -135,7 +135,7 @@ const TeacherSubjects = () => {
                         <div
                           className="box-bottom"
                           onClick={() =>
-                            navigate(`${groupSubject.id}?token=${token}`, {
+                            navigate(`${groupSubject.id}/props/Attendance`, {
                               state: groupSubjects.find(
                                 (groupSub) => groupSub.id === groupSubject.id
                               ),
