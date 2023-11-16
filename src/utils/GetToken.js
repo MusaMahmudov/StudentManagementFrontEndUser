@@ -33,7 +33,9 @@ export const removeExpireDate = () => {
   const cookie = new Cookies();
   const token = getToken();
   if (token) {
-    cookie.remove(cookie.get("tokenStudent") ? "tokenStudent" : "tokenTeacher");
+    cookie.remove(
+      cookie.get("tokenStudent") ? "expireDateStudent" : "expireDateTeacher"
+    );
     return true;
   }
   return false;

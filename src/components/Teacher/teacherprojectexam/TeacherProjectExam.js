@@ -30,7 +30,7 @@ const TeacherSubjectProjectExam = () => {
   );
 
   const examQuery = useQuery([QueryKeys.getExamQueryKeys], () =>
-    examServices.getExamForExamsforTeacherPageAsign(projectExamId)
+    examServices.getExamForExamsforTeacherPageAsign(projectExamId, token)
   );
   console.log(studentQuery.data?.data);
 

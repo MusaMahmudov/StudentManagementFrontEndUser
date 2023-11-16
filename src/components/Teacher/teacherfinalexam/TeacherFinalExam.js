@@ -30,9 +30,8 @@ const TeacherSubjectFinalExam = () => {
   );
 
   const examQuery = useQuery([QueryKeys.getExamQueryKeys], () =>
-    examServices.getExamForExamsforTeacherPageAsign(finalExamId)
+    examServices.getExamForExamsforTeacherPageAsign(finalExamId, token)
   );
-  console.log(studentQuery.data?.data);
 
   const [newExamResult, setNewExamResult] = useState({
     studentId: null,

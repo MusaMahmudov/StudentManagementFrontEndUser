@@ -29,7 +29,7 @@ const TeacherSubjectMidtermExam = () => {
     )
   );
   const examQuery = useQuery([QueryKeys.getExamQueryKeys], () =>
-    examServices.getExamForExamsforTeacherPageAsign(midtermExamId)
+    examServices.getExamForExamsforTeacherPageAsign(midtermExamId, token)
   );
 
   const [newExamResult, setNewExamResult] = useState({

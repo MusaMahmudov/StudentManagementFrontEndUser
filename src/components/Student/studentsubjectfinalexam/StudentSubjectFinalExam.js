@@ -14,7 +14,7 @@ import { TokenContext } from "../../../contexts/TokenContext";
 import { useService } from "../../../hooks";
 import { useQuery } from "react-query";
 import { QueryKeys } from "../../../API/QueryKeys";
-import { Alert } from "@mui/material";
+import { Alert, Box, LinearProgress } from "@mui/material";
 const StudentSubjectFinalExam = () => {
   const { personId, personFullName, token } = useContext(TokenContext);
   const [Grade, setGrade] = useState("");
@@ -116,6 +116,13 @@ const StudentSubjectFinalExam = () => {
       border: "1px solid white",
     },
   }));
+  if (examResultQuery.isLoading) {
+    return (
+      <Box sx={{ width: "100%" }}>
+        <LinearProgress />
+      </Box>
+    );
+  }
   if (!examResultQuery.data) {
     return (
       <Alert variant="filled" severity="error">
@@ -123,6 +130,7 @@ const StudentSubjectFinalExam = () => {
       </Alert>
     );
   }
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">

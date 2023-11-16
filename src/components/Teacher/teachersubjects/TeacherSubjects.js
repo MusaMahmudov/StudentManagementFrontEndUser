@@ -73,9 +73,7 @@ const TeacherSubjects = () => {
   if (groupSubjectQuery.isError) {
     return <h1>Error</h1>;
   }
-  if (!groupSubjectQuery.data?.data.length > 0) {
-    return <h1>No Subjects</h1>;
-  }
+
   return (
     <div className="main-part">
       <div className="container">

@@ -15,12 +15,9 @@ import "tippy.js/themes/translucent.css";
 import "tippy.js/dist/tippy.css";
 import { CircularProgress } from "@mui/material";
 const StudentSchedule = () => {
-  const { studentServices, subjectHourServices } = useService();
+  const { subjectHourServices } = useService();
   const { personId, token } = useContext(TokenContext);
 
-  // const studentQuery = useQuery([QueryKeys.getStudentByIdKey], () =>
-  //   studentServices.getStudentByIdForStudentPage(personId, token)
-  // );
   let events = [];
   const subjectHourQuery = useQuery([QueryKeys.getSubjectHoursByIdKey], () =>
     subjectHourServices.getSubjectHoursForStudentSchedule(

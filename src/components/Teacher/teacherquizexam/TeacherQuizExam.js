@@ -29,7 +29,7 @@ const TeacherSubjectQuizExam = () => {
     )
   );
   const examQuery = useQuery([QueryKeys.getExamQueryKeys], () =>
-    examServices.getExamForExamsforTeacherPageAsign(quizExamId)
+    examServices.getExamForExamsforTeacherPageAsign(quizExamId, token)
   );
 
   const [newExamResult, setNewExamResult] = useState({
@@ -117,9 +117,6 @@ const TeacherSubjectQuizExam = () => {
                 {student.fullName}
               </StyledTableCell>
               <TextField
-                // onKeyUp={(e) =>
-                //   e.target.value === "" ? handleCreate(e) : handleUpdate(e)
-                // }
                 onKeyUp={(e) =>
                   student.examResults?.find(
                     (examResult) => examResult.examId == quizExamId
@@ -141,7 +138,6 @@ const TeacherSubjectQuizExam = () => {
                 }
                 sx={{ width: "100%" }}
               />
-              {/* <StyledTableCell align="left">{examScore}</StyledTableCell> */}
               <StyledTableCell align="left">
                 {examQuery.data?.data.maxScore}
               </StyledTableCell>

@@ -15,15 +15,12 @@ import "tippy.js/dist/tippy.css";
 import { CircularProgress } from "@mui/material";
 import { queries } from "@testing-library/react";
 const StudentExamsSchedule = () => {
-  const { subjectHourServices, examServices } = useService();
+  const { examServices } = useService();
   const { personId, token } = useContext(TokenContext);
   const [studentId, setStudentId] = useState(
     personId ? personId : localStorage.getItem("studentId")
   );
   let events = [];
-  //   const subjectHourQuery = useQuery([QueryKeys.getSubjectHoursByIdKey], () =>
-  //     subjectHourServices.getSubjectHoursForStudentSchedule(personId, token)
-  //   );
 
   const examsQuery = useQuery([QueryKeys.getExamQueryKeys], () =>
     examServices.getExamsForExamsScheduleForStudentPage(
@@ -42,16 +39,8 @@ const StudentExamsSchedule = () => {
   console.log(examsQuery.data?.data, "exams");
   if (examsQuery.isSuccess) {
     examsQuery.data?.data.forEach((exam) => {
-      //   let startDate = new Date(subjectHour.date);
-      //   let endDate = new Date(subjectHour.date);
       let date = new Date(exam.date);
       console.log(exam.date.slice(0, 10));
-
-      //   let [startHours, startMinutes] = subjectHour.startTime.split(":");
-      //   startDate.setHours(startHours, startMinutes);
-
-      //   let [endHours, endMinutes] = subjectHour.endTime.split(":");
-      //   endDate.setHours(endHours, endMinutes);
 
       let event = {
         title: `${exam.examTypeName} - ${exam.groupSubject.subjectName}`,

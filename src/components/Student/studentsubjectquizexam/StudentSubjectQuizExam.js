@@ -13,6 +13,7 @@ import { TokenContext } from "../../../contexts/TokenContext";
 import { useQuery } from "react-query";
 import { QueryKeys } from "../../../API/QueryKeys";
 import { useService } from "../../../hooks";
+import { Box, LinearProgress } from "@mui/material";
 const StudentSubjectQuizExam = () => {
   const { personId, personFullName, token } = useContext(TokenContext);
   const { Id: quizExamId } = useParams();
@@ -46,6 +47,13 @@ const StudentSubjectQuizExam = () => {
       border: "1px solid white",
     },
   }));
+  if (examResultQuery.isLoading) {
+    return (
+      <Box sx={{ width: "100%" }}>
+        <LinearProgress />
+      </Box>
+    );
+  }
 
   return (
     <TableContainer component={Paper}>

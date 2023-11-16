@@ -24,7 +24,6 @@ const TeacherSubjectInformation = () => {
   useEffect(() => {
     setSubjectInfo(state);
   }, []);
-  console.log(subjectInfo, state, "SubjectInfo");
   return (
     <div className="main-part">
       <div className="container">
